@@ -20,7 +20,7 @@
 #ifndef __GTYPES_H__
 #define __GTYPES_H__
 
-#define THUMBNAIL_WIDTH 80
+#define THUMBNAIL_WIDTH  80
 #define THUMBNAIL_HEIGHT 60
 #define SLIDESHOW_DELAY 4000
 
