@@ -450,7 +450,7 @@ void
 menu_file_full_view(GtkWidget *widget, gpointer data)
 {
    rc_set_boolean("full_screen", TRUE);
-   
+
    show_viewer();
 }
 
@@ -643,7 +643,7 @@ menu_view_show_hidden(GtkWidget *widget, gpointer data)
    if (busy_level > 0) return;
 
    rc_set_boolean("show_hidden", GTK_CHECK_MENU_ITEM(widget)->active);
-   
+
    menu_view_refresh(widget, data);
 }
 
@@ -653,7 +653,7 @@ menu_view_hide(GtkWidget *widget, gpointer data)
    if (busy_level > 0) return;
 
    rc_set_boolean("hide_non_images", GTK_CHECK_MENU_ITEM(widget)->active);
-   
+
    refresh_list();
 }
 
@@ -688,7 +688,7 @@ void
 menu_view_preview(GtkWidget *widget, gpointer data)
 {
    rc_set_boolean("fast_preview", GTK_CHECK_MENU_ITEM(widget)->active);
-   
+
 }
 
 void
@@ -833,12 +833,15 @@ menu_tools_slide_show(GtkWidget *widget, gpointer data)
 }
 
 void
+menu_help_contents(GtkWidget *widget, gpointer data)
+{
+   generate_dialog(CONTENTS);
+}
+
+void
 menu_help_about(GtkWidget *widget, gpointer data)
 {
-   GtkWidget *dialog;
-
-   dialog = get_about_dialog();
-   gtk_widget_show(dialog);
+   generate_dialog(ABOUT);
 }
 
 void
@@ -885,7 +888,7 @@ toolbar_thumbnails(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_THUMBNAILS);
-   
+
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -903,7 +906,7 @@ toolbar_small_icons(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_SMALL_ICONS);
-   
+
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -921,7 +924,7 @@ toolbar_details(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_DETAILS);
-   
+
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -1055,12 +1058,12 @@ main (int argc, char *argv[])
 
          case 'f':
             rc_set_boolean("full_screen", TRUE);
-            
+
             break;
 
          case 'i':
             rc_set_boolean("fit_screen", TRUE);
-            
+
             break;
 
          case 's':

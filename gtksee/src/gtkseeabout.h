@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef __GTKSEEABOUT_H__
 #define __GTKSEEABOUT_H__
 
@@ -26,7 +26,10 @@
 
 #include <gtk/gtk.h>
 
-GtkWidget*	get_about_dialog	();
+#define ABOUT     1
+#define CONTENTS  2
+
+void  generate_dialog    (gchar type);
 
 #ifdef __cplusplus
         }

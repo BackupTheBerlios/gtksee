@@ -55,10 +55,8 @@ void  menu_view_refresh          (GtkWidget *widget, gpointer data);
 void  menu_view_quick_refresh    (GtkWidget *widget, gpointer data);
 void  menu_view_auto_refresh     (GtkWidget *widget, gpointer data);
 void  menu_tools_slide_show      (GtkWidget *widget, gpointer data);
-void  menu_help_legal            (GtkWidget *widget, gpointer data);
-void  menu_help_usage            (GtkWidget *widget, gpointer data);
-void  menu_help_known_bugs       (GtkWidget *widget, gpointer data);
-void  menu_help_feedback         (GtkWidget *widget, gpointer data);
+
+void  menu_help_contents         (GtkWidget *widget, gpointer data);
 void  menu_help_about            (GtkWidget *widget, gpointer data);
 void  menu_send_gimp             (GtkWidget *widget, gpointer data);
 

@@ -358,25 +358,13 @@ get_main_menu(GtkWidget *window)
    /* Help menu */
    menu = create_menu(GTK_MENU_BAR(menubar), _("Help"), accel);
 
-   create_menu_item(GTK_MENU(menu), _("Legal"),
-      GTK_SIGNAL_FUNC(menu_help_legal),
-      NULL, 0, 0);
-
-   create_menu_item(GTK_MENU(menu), _("Usage"),
-      GTK_SIGNAL_FUNC(menu_help_usage),
-      NULL, 0, 0);
-
-   create_menu_item(GTK_MENU(menu), _("Known-bugs"),
-      GTK_SIGNAL_FUNC(menu_help_known_bugs),
-      NULL, 0, 0);
-
-   create_menu_item(GTK_MENU(menu), _("Feedback"),
-      GTK_SIGNAL_FUNC(menu_help_feedback),
+   create_menu_item(GTK_MENU(menu), _("Contents"),
+      GTK_SIGNAL_FUNC(menu_help_contents),
       NULL, 0, 0);
 
    create_menu_item(GTK_MENU(menu), NULL, NULL, NULL, 0, 0);
 
-   create_menu_item(GTK_MENU(menu), _("About"),
+   create_menu_item(GTK_MENU(menu), _("About GTK See..."),
       GTK_SIGNAL_FUNC(menu_help_about),
       NULL, 0, 0);
 
