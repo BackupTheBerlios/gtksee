@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* 
+/*
  * 2003-09-02: Little changes. Eliminated buffers
- * 
+ *
  */
 
 #include "config.h"
@@ -339,18 +339,18 @@ detect_xcf(guchar *filename, ImageInfo *info)
 
 static DetectFunc detect_funcs[MAX_IMAGE_TYPES - 1] =
 {
-   (DetectFunc)detect_xpm,
-   (DetectFunc)detect_gif,
    (DetectFunc)detect_jpeg,
+   (DetectFunc)detect_png,
+   (DetectFunc)detect_gif,
+   (DetectFunc)detect_xcf,
+   (DetectFunc)detect_xpm,
    (DetectFunc)detect_bmp,
    (DetectFunc)detect_ico,
    (DetectFunc)detect_pcx,
    (DetectFunc)detect_tiff,
-   (DetectFunc)detect_png,
    (DetectFunc)detect_pnm,
    (DetectFunc)detect_psd,
    (DetectFunc)detect_xbm,
-   (DetectFunc)detect_xcf,
 };
 
 gboolean

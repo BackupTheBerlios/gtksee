@@ -17,6 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+ * 2003-09-12: - Changed reading of directory
+ *             - Little improved of code
+ */
+
 #include "config.h"
 
 #define SIITEM_HEIGHT 18
@@ -25,27 +30,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
-#include <sys/types.h>
-
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
-
-#include <sys/stat.h>
 #include <gtk/gtk.h>
 
 #include "gtypes.h"
@@ -56,8 +40,6 @@
 #include "imagelist.h"
 #include "imagesiitem.h"
 #include "imagesilist.h"
-
-#define SUFFIX(str, suf) (strstr(str,suf)>str)
 
 enum
 {
@@ -97,15 +79,15 @@ image_silist_init(ImageSiList *il)
 {
    int t;
 
-   il -> dir [0] = '\0';
+   il -> dir [0]           = '\0';
    il -> selected_item [0] = '\0';
-   il -> selected_widget = NULL;
+   il -> selected_widget   = NULL;
    t = rc_get_int("image_sort_type");
-   il -> sort_type = (t == RC_NOT_EXISTS ? IMAGE_SORT_ASCEND_BY_NAME : t);
-   il -> max_height = 1;
-   il -> info = NULL;
-   il -> nfiles = 0;
-   il -> total_size = 0;
+   il -> sort_type   = (t == RC_NOT_EXISTS ? IMAGE_SORT_ASCEND_BY_NAME : t);
+   il -> max_height  = 1;
+   il -> info        = NULL;
+   il -> nfiles      = 0;
+   il -> total_size  = 0;
 }
 
 void
@@ -206,12 +188,16 @@ image_silist_clear(ImageSiList *il)
    {
       item = GTK_WIDGET(children->data);
       info = gtk_object_get_user_data(GTK_OBJECT(item));
+
       if (info->loaded && info->cache.buffer != NULL)
          g_free(info->cache.buffer);
-      if (info->has_desc) g_free(info->desc);
+      if (info->has_desc)
+         g_free(info->desc);
+
       g_free(info);
       children = g_list_remove_link(children, children);
    }
+
    gtk_container_remove(GTK_CONTAINER(il), table);
 
    il -> selected_item [0] = '\0';
@@ -224,111 +210,17 @@ image_silist_clear(ImageSiList *il)
 void
 image_silist_refresh(ImageSiList *il)
 {
-   DIR *dp;
-   struct dirent *item;
-   gchar fullname[256];
-   struct stat st;
-   GList *list, *t_pos;
-   ImageInfo *info;
-   gint type, rows, columns, serial;
-   GtkWidget *table, *img;
-   gboolean show_hidden, hide_non_images;
+   GList       *list, *t_pos;
+   ImageInfo   *info;
+   gint        rows, columns, serial;
+   GtkWidget   *table, *img;
 
    if (strlen(il->dir) < 1) return;
 
    image_silist_clear(il);
 
-   if ((dp = opendir(il->dir)) == NULL) return;
-   list = NULL;
-
-   il -> nfiles = 0;
-   il -> total_size = 0;
-   show_hidden = rc_get_boolean("show_hidden");
-   hide_non_images = rc_get_boolean("hide_non_images");
-
-   while ((item = readdir(dp)) != NULL)
-   {
-      if (item -> d_ino == 0) continue;
-      if (strcmp(item -> d_name, ".") == 0) continue;
-      if (strcmp(item -> d_name, "..") == 0) continue;
-      if (!show_hidden && item->d_name[0] == '.') continue;
-      strcpy(fullname, il->dir);
-      if (fullname[strlen(fullname) - 1] != '/') strcat(fullname,"/");
-      strcat(fullname, item -> d_name);
-      if (stat(fullname, &st) != 0) continue;
-      if ((st.st_mode & S_IFMT) != S_IFREG) continue;
-      if (SUFFIX(item -> d_name, ".xpm") ||
-          SUFFIX(item -> d_name, ".XPM")) type = XPM;
-      else if (SUFFIX(item -> d_name, ".gif") ||
-          SUFFIX(item -> d_name, ".GIF")) type = GIF;
-      else if (SUFFIX(item -> d_name, ".jpg") ||
-          SUFFIX(item -> d_name, ".JPG") ||
-          SUFFIX(item -> d_name, ".jpeg") ||
-          SUFFIX(item -> d_name, ".JPEG")) type = JPG;
-      else if (SUFFIX(item -> d_name, ".bmp") ||
-          SUFFIX(item -> d_name, ".BMP")) type = BMP;
-      else if (SUFFIX(item -> d_name, ".ico") ||
-          SUFFIX(item -> d_name, ".ICO")) type = ICO;
-      else if (SUFFIX(item -> d_name, ".pcx") ||
-          SUFFIX(item -> d_name, ".PCX")) type = PCX;
-      else if (SUFFIX(item -> d_name, ".tif") ||
-          SUFFIX(item -> d_name, ".TIF") ||
-          SUFFIX(item -> d_name, ".tiff") ||
-          SUFFIX(item -> d_name, ".TIFF")) type = TIF;
-      else if (SUFFIX(item -> d_name, ".png") ||
-          SUFFIX(item -> d_name, ".PNG")) type = PNG;
-      else if (SUFFIX(item -> d_name, ".ppm") ||
-          SUFFIX(item -> d_name, ".PPM") ||
-          SUFFIX(item -> d_name, ".pnm") ||
-          SUFFIX(item -> d_name, ".PNM") ||
-          SUFFIX(item -> d_name, ".pgm") ||
-          SUFFIX(item -> d_name, ".PGM") ||
-          SUFFIX(item -> d_name, ".pbm") ||
-          SUFFIX(item -> d_name, ".PBM")) type = PNM;
-      else if (SUFFIX(item -> d_name, ".psd") ||
-          SUFFIX(item -> d_name, ".PSD")) type = PSD;
-      else if (SUFFIX(item -> d_name, ".xbm") ||
-          SUFFIX(item -> d_name, ".XBM") ||
-          SUFFIX(item -> d_name, ".icon") ||
-          SUFFIX(item -> d_name, ".ICON") ||
-          SUFFIX(item -> d_name, ".bitmap") ||
-          SUFFIX(item -> d_name, ".BITMAP")) type = XBM;
-      else if (SUFFIX(item -> d_name, ".xcf") ||
-          SUFFIX(item -> d_name, ".XCF")) type = XCF;
-      else type = UNKNOWN;
-      info = g_malloc(sizeof(ImageInfo));
-      info -> type = type;
-      strcpy(info -> name, item -> d_name);
-      info -> size = st.st_size;
-      info -> time = st.st_mtime;
-      info -> width = -1;
-      info -> height = -1;
-      info -> has_desc = FALSE;
-      info -> ncolors = -1;
-      info -> real_ncolors = TRUE;
-      info -> alpha = 0;
-      info -> bpp = 0;
-      info -> loaded = FALSE;
-      info -> cache.buffer = NULL;
-      info -> valid = TRUE;
-      /*
-       * We should detect image type and setup header imformations
-       */
-      detect_image_type(fullname, info);
-      if (hide_non_images && (info->width < 0 || info->type == UNKNOWN))
-      {
-         /* Do not show this image in the list */
-         g_free(info);
-         continue;
-      }
-      info -> type_pixmap = image_type_get_pixmap(info->type);
-      info -> type_mask = image_type_get_mask(info->type);
-      list = g_list_insert_sorted(list, info, image_list_get_sort_func(il->sort_type));
-      il -> nfiles ++;
-      il -> total_size += info -> size;
-   }
-   g_free(item);
-   closedir(dp);
+   list = image_get_load_file(il->dir, &il->nfiles, &il->total_size,
+                                 il->sort_type, IS_SILIST);
 
    rows = max(1, (il->max_height-SCROLLBAR_HEIGHT) / SIITEM_HEIGHT);
    if (il->nfiles == 0)
@@ -367,7 +259,7 @@ image_silist_update_info(ImageSiList *il, ImageInfo *info)
    if (child == NULL || !IS_IMAGE_SIITEM(child)) return;
    if (info->type < UNKNOWN)
    {
-      image_type_get_color(info->type, &color);
+      color = image_type_get_color(info->type);
       image_siitem_set_color(IMAGE_SIITEM(child), &color);
       image_set_tooltips(child, info);
    }
@@ -450,7 +342,7 @@ image_silist_create_item(ImageSiList *il, ImageInfo *info)
          image_type_get_pixmap(info->type),
          image_type_get_mask(info->type),
          info->name);
-      image_type_get_color(info->type, &color);
+      color = image_type_get_color(info->type);
       image_siitem_set_color(IMAGE_SIITEM(item), &color);
    } else
    {

@@ -41,7 +41,7 @@ struct _DirtreeClass
 struct _Dirtree
 {
 	GtkTree tree;
-	guchar root[64];
+	guchar root[512];
 	guchar selected_dir[256];
 	gint item_height;
 	GtkWidget *parent;

@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef __IMAGETNLIST_H__
 #define __IMAGETNLIST_H__
 
@@ -28,51 +28,50 @@
 
 #include "gtypes.h"
 
-#define IMAGE_TNLIST(obj)		GTK_CHECK_CAST (obj, image_tnlist_get_type (), ImageTnList)
-#define IMAGE_TNLIST_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, image_tnlist_get_type (), ImageTnListClass)
-#define IS_IMAGE_TNLIST(obj)		GTK_CHECK_TYPE (obj, image_tnlist_get_type ())
+#define IMAGE_TNLIST(obj)           GTK_CHECK_CAST (obj, image_tnlist_get_type (), ImageTnList)
+#define IMAGE_TNLIST_CLASS(klass)   GTK_CHECK_CLASS_CAST (klass, image_tnlist_get_type (), ImageTnListClass)
+#define IS_IMAGE_TNLIST(obj)        GTK_CHECK_TYPE (obj, image_tnlist_get_type ())
 
-typedef struct _ImageTnList		ImageTnList;
-typedef struct _ImageTnListClass	ImageTnListClass;
+typedef struct _ImageTnList      ImageTnList;
+typedef struct _ImageTnListClass ImageTnListClass;
 
 struct _ImageTnListClass
 {
-        GtkHBoxClass parent_class;
-	void (*select_image) (ImageTnList *il);
+   GtkHBoxClass         parent_class;
+   void (*select_image) (ImageTnList *il);
 };
 
 struct _ImageTnList
 {
-        GtkHBox hbox;
-	guint max_width;
-        guchar dir[256];
-	guchar selected_item[64];
-	ImageSortType sort_type;
-	GtkWidget *selected_widget;
-	ImageInfo *info;
-	gboolean lock;
-	
-	/* the two field should be set when a dir is selected */
-	gint nfiles;
-	glong total_size;
+   GtkHBox        hbox;
+   guint          max_width;
+   guchar         dir[256];
+   guchar         selected_item[256];
+   ImageSortType  sort_type;
+   GtkWidget      *selected_widget;
+   ImageInfo      *info;
+   gboolean       lock;
+
+   /* the two field should be set when a dir is selected */
+   gint           nfiles;
+   glong          total_size;
 };
 
-guint		image_tnlist_get_type		();
-GtkWidget*	image_tnlist_new		();
-void		image_tnlist_set_width		(ImageTnList *il, guint width);
-void		image_tnlist_set_dir		(ImageTnList *il, guchar *dir);
-void		image_tnlist_clear		(ImageTnList *il);
-void		image_tnlist_refresh		(ImageTnList *il);
-void		image_tnlist_update_info	(ImageTnList *il, ImageInfo *info);
-ImageInfo*	image_tnlist_get_first		(ImageTnList *il);
-ImageInfo*	image_tnlist_get_last		(ImageTnList *il);
-ImageInfo*	image_tnlist_get_next		(ImageTnList *il, ImageInfo *info);
-ImageInfo*	image_tnlist_get_previous	(ImageTnList *il, ImageInfo *info);
-void		image_tnlist_select_by_serial	(ImageTnList *il, gint serial);
-ImageInfo*	image_tnlist_get_by_serial	(ImageTnList *il, gint serial);
-void		image_tnlist_remove_cache	(ImageTnList *il);
-void		image_tnlist_set_sort_type	(ImageTnList *il,
-						 ImageSortType type);
+guint       image_tnlist_get_type         ();
+GtkWidget*  image_tnlist_new              ();
+void        image_tnlist_set_width        (ImageTnList *il, guint width);
+void        image_tnlist_set_dir          (ImageTnList *il, guchar *dir);
+void        image_tnlist_clear            (ImageTnList *il);
+void        image_tnlist_refresh          (ImageTnList *il);
+void        image_tnlist_update_info      (ImageTnList *il, ImageInfo *info);
+ImageInfo*  image_tnlist_get_first        (ImageTnList *il);
+ImageInfo*  image_tnlist_get_last         (ImageTnList *il);
+ImageInfo*  image_tnlist_get_next         (ImageTnList *il, ImageInfo *info);
+ImageInfo*  image_tnlist_get_previous     (ImageTnList *il, ImageInfo *info);
+void        image_tnlist_select_by_serial (ImageTnList *il, gint serial);
+ImageInfo*  image_tnlist_get_by_serial    (ImageTnList *il, gint serial);
+void        image_tnlist_remove_cache     (ImageTnList *il);
+void        image_tnlist_set_sort_type    (ImageTnList *il, ImageSortType type);
 
 #ifdef __cplusplus
         }

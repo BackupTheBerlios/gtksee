@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef __IMAGECLIST_H__
 #define __IMAGECLIST_H__
 
@@ -28,47 +28,47 @@
 
 #include "gtypes.h"
 
-#define IMAGE_CLIST(obj)		GTK_CHECK_CAST (obj, image_clist_get_type (), ImageCList)
-#define IMAGE_CLIST_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, image_clist_get_type (), ImageCListClass)
-#define IS_IMAGE_CLIST(obj)		GTK_CHECK_TYPE (obj, image_clist_get_type ())
+#define IMAGE_CLIST(obj)      GTK_CHECK_CAST (obj, image_clist_get_type (), ImageCList)
+#define IMAGE_CLIST_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, image_clist_get_type (), ImageCListClass)
+#define IS_IMAGE_CLIST(obj)      GTK_CHECK_TYPE (obj, image_clist_get_type ())
 
-#define MAX_TITLES 3
+/* Maximum titles */
+#define MAX_TITLES 4
 
-typedef struct _ImageCList	ImageCList;
-typedef struct _ImageCListClass	ImageCListClass;
+typedef struct _ImageCList ImageCList;
+typedef struct _ImageCListClass  ImageCListClass;
 
 struct _ImageCListClass
 {
-        GtkCListClass parent_class;
+   GtkCListClass parent_class;
 };
 
 struct _ImageCList
 {
-        GtkCList clist;
-	guchar *titles[MAX_TITLES];
-        guchar dir[256];
-	guchar selected_item[64];
-	ImageSortType sort_type;
-	ImageInfo *info;
-	
-	/* the two field should be set when a dir is selected */
-	gint nfiles;
-	glong total_size;
+   GtkCList       clist;
+   guchar         *titles[MAX_TITLES];
+   guchar         dir[256];
+   guchar         selected_item[64];
+   ImageSortType  sort_type;
+   ImageInfo      *info;
+
+   /* the two field should be set when a dir is selected */
+   gint nfiles;
+   glong total_size;
 };
 
-guint		image_clist_get_type	();
-GtkWidget*	image_clist_new		();
-void		image_clist_set_dir	(ImageCList *il, guchar *dir);
-void		image_clist_clear	(ImageCList *il);
-void		image_clist_refresh	(ImageCList *il);
-void		image_clist_update_info	(ImageCList *il, ImageInfo *info);
-ImageInfo*	image_clist_get_first	(ImageCList *il);
-ImageInfo*	image_clist_get_last	(ImageCList *il);
-ImageInfo*	image_clist_get_next	(ImageCList *il, ImageInfo *info);
-ImageInfo*	image_clist_get_previous(ImageCList *il, ImageInfo *info);
-void		image_clist_remove_cache(ImageCList *il);
-void		image_clist_set_sort_type
-					(ImageCList *il, ImageSortType type);
+guint       image_clist_get_type     ();
+GtkWidget*  image_clist_new          ();
+void        image_clist_set_dir      (ImageCList *il, guchar *dir);
+void        image_clist_clear        (ImageCList *il);
+void        image_clist_refresh      (ImageCList *il);
+void        image_clist_update_info  (ImageCList *il, ImageInfo *info);
+ImageInfo*  image_clist_get_first    (ImageCList *il);
+ImageInfo*  image_clist_get_last     (ImageCList *il);
+ImageInfo*  image_clist_get_next     (ImageCList *il, ImageInfo *info);
+ImageInfo*  image_clist_get_previous (ImageCList *il, ImageInfo *info);
+void        image_clist_remove_cache (ImageCList *il);
+void        image_clist_set_sort_type(ImageCList *il, ImageSortType type);
 
 #ifdef __cplusplus
         }

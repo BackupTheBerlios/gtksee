@@ -198,13 +198,13 @@ image_siitem_realize(GtkWidget *widget)
 	ImageSiItem *item;
 	GdkWindowAttr attributes;
 	gint attributes_mask;
-	
+
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(IS_IMAGE_SIITEM(widget));
-	
+
 	item = IMAGE_SIITEM(widget);
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
-	
+
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;
@@ -214,19 +214,21 @@ image_siitem_realize(GtkWidget *widget)
 	attributes.visual = gtk_widget_get_visual (widget);
 	attributes.colormap = gtk_widget_get_colormap (widget);
 	attributes.event_mask = gtk_widget_get_events (widget);
+
 	attributes.event_mask |= (
 		GDK_EXPOSURE_MASK |
 		GDK_BUTTON_PRESS_MASK |
 		GDK_BUTTON_RELEASE_MASK |
 		GDK_ENTER_NOTIFY_MASK |
 		GDK_LEAVE_NOTIFY_MASK);
+
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
 	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
 	gdk_window_set_user_data (widget->window, item);
-	
+
 	widget->style = gtk_style_attach (widget->style, widget->window);
 	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
-	
+
 	item->bg_gc = gdk_gc_new(widget->window);
 }
 

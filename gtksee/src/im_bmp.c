@@ -24,7 +24,7 @@
  *
  * 1998/11/24 by Hotaru Lee: fixed: funny spzeile value
  *
- * 2003-09-02: Little changes
+ * 2003-09-02: Little changes, added support for OS/2 1.x
  */
 
 #include "config.h"
@@ -67,40 +67,53 @@ bmp_get_header(gchar *filename, bmp_info *info)
    if ((fd = fopen (filename, "rb")) == NULL)
       return FALSE;
 
-   if (!ReadOK (fd, buffer, 18)  ||
-         (buffer[0] !='B' && buffer[1] !='M'))
+   /* Read first 14-byte header + 4 bytes from bitmap header */
+   if (!ReadOK (fd, buffer, 18)               ||
+         (buffer[0] !='B' && buffer[1] !='M') ||   /* Windows BMP   */
+         (buffer[0] !='B' && buffer[1] !='A'))     /* OS/2 BMP only */
    {
       fclose(fd);
       return FALSE;
    }
 
-   bfSize   = ToL(buffer,  2);
-   reserverd= ToL(buffer,  6);
-   bfOffs   = ToL(buffer, 10);
-   biSize   = ToL(buffer, 14);
+   bfSize   = ToL(buffer,  2);   /* Size of the file in bytes        */
+   reserverd= ToL(buffer,  6);   /* WORD Reserved1 and Reserved2     */
+   bfOffs   = ToL(buffer, 10);   /* Starting position of image data  */
+   biSize   = ToL(buffer, 14);   /* Size of bitmap header in bytes   */
+                                 /* Windows = 40   OS/2 = 12         */
 
-   if (biSize!=40)
+   if ((biSize!=40) && (biSize!=12)) /* Windows 3.x  OS/2 1.x */
    {
       fclose(fd);
       return FALSE;
    }
 
-   if (!ReadOK (fd, buffer, 36))
+   if (!ReadOK (fd, buffer, biSize-4))    /* Read bitmap header */
    {
       fclose(fd);
       return FALSE;
    }
 
-   info -> width     = ToL(buffer, 0x00);
-   info -> height    = ToL(buffer, 0x04);
-   info -> planes    = ToS(buffer, 0x08);
-   info -> bitCnt    = ToS(buffer, 0x0A);
-   info -> compr     = ToL(buffer, 0x0C);
-   info -> sizeIm    = ToL(buffer, 0x10);
-   info -> xPels     = ToL(buffer, 0x14);
-   info -> yPels     = ToL(buffer, 0x18);
-   info -> clrUsed   = ToL(buffer, 0x1C);
-   info -> clrImp    = ToL(buffer, 0x20);
+   if (biSize==40)   /* Windows BMP */
+   {
+      info -> width     = ToL(buffer,  0);   /* Image width in pixels */
+      info -> height    = ToL(buffer,  4);   /* Image height in pixels */
+      info -> planes    = ToS(buffer,  8);   /* Number of color planes */
+      info -> bitCnt    = ToS(buffer, 10);   /* Number of bits per pixel */
+      info -> compr     = ToL(buffer, 12);   /* Compression methods used */
+      info -> sizeIm    = ToL(buffer, 16);   /* Size of bitmap in bytes */
+      info -> xPels     = ToL(buffer, 20);   /* Horizontal resolution in pixels per meter */
+      info -> yPels     = ToL(buffer, 24);   /* Vertical resolution in pixels per meter */
+      info -> clrUsed   = ToL(buffer, 28);   /* Number of colors in the image */
+      info -> clrImp    = ToL(buffer, 32);   /* Minimum number of important colors */
+   } else
+   {        /* OS/2 BMP */
+      info -> width     = ToS(buffer,  0);
+      info -> height    = ToS(buffer,  2);
+      info -> planes    = ToS(buffer,  4);
+      info -> bitCnt    = ToS(buffer,  6);
+      info -> compr     = 0;
+   }
 
    fclose(fd);
 
@@ -122,45 +135,54 @@ bmp_load(gchar *filename, BmpLoadFunc func)
    if ((fd = fopen (filename, "rb")) == NULL)
       return FALSE;
 
-   if (!ReadOK (fd, buffer, 18))
+   /* Read first 14-byte header + 4 bytes from bitmap header */
+   if (!ReadOK (fd, buffer, 18)               ||
+         (buffer[0] !='B' && buffer[1] !='M') ||   /* Windows BMP   */
+         (buffer[0] !='B' && buffer[1] !='A'))     /* OS/2 BMP only */
    {
       fclose(fd);
       return FALSE;
    }
 
-   if (buffer[0] !='B' && buffer[1] !='M')
+   bfSize   = ToL(buffer,  2);   /* Size of the file in bytes        */
+   reserverd= ToL(buffer,  6);   /* WORD Reserved1 and Reserved2     */
+   bfOffs   = ToL(buffer, 10);   /* Starting position of image data  */
+   biSize   = ToL(buffer, 14);   /* Size of bitmap header in bytes   */
+                                 /* Windows = 40 * OS/2 = 12         */
+
+   if (biSize!=40 && biSize!=12) /* Windows 3.x  OS/2 1.x */
    {
       fclose(fd);
       return FALSE;
    }
 
-   bfSize   = ToL(buffer,  2);
-   reserverd= ToL(buffer,  6);
-   bfOffs   = ToL(buffer, 10);
-   biSize   = ToL(buffer, 14);
-
-   if (biSize!=40)
+   if (!ReadOK (fd, buffer, biSize-4))    /* Read bitmap header */
    {
       fclose(fd);
       return FALSE;
    }
 
-   if (!ReadOK (fd, buffer, 36))
+   if (biSize==40)   /* Windows BMP */
    {
-      fclose(fd);
-      return FALSE;
+      cinfo.width     = ToL(buffer,  0);   /* Image width in pixels */
+      cinfo.height    = ToL(buffer,  4);   /* Image height in pixels */
+      cinfo.planes    = ToS(buffer,  8);   /* Number of color planes */
+      cinfo.bitCnt    = ToS(buffer, 10);   /* Number of bits per pixel */
+      cinfo.compr     = ToL(buffer, 12);   /* Compression methods used */
+      cinfo.sizeIm    = ToL(buffer, 16);   /* Size of bitmap in bytes */
+      cinfo.xPels     = ToL(buffer, 20);   /* Horizontal resolution in pixels per meter */
+      cinfo.yPels     = ToL(buffer, 24);   /* Vertical resolution in pixels per meter */
+      cinfo.clrUsed   = ToL(buffer, 28);   /* Number of colors in the image */
+      cinfo.clrImp    = ToL(buffer, 32);   /* Minimum number of important colors */
+   } else
+   {
+      cinfo.width     = ToS(buffer,  0);
+      cinfo.height    = ToS(buffer,  2);
+      cinfo.planes    = ToS(buffer,  4);
+      cinfo.bitCnt    = ToS(buffer,  6);
+      cinfo.compr     = 0;
    }
 
-   cinfo.width    = ToL(buffer, 0x00);
-   cinfo.height   = ToL(buffer, 0x04);
-   cinfo.planes   = ToS(buffer, 0x08);
-   cinfo.bitCnt   = ToS(buffer, 0x0A);
-   cinfo.compr    = ToL(buffer, 0x0C);
-   cinfo.sizeIm   = ToL(buffer, 0x10);
-   cinfo.xPels    = ToL(buffer, 0x14);
-   cinfo.yPels    = ToL(buffer, 0x18);
-   cinfo.clrUsed  = ToL(buffer, 0x1C);
-   cinfo.clrImp   = ToL(buffer, 0x20);
 
    if (cinfo.bitCnt > 24)
    {

@@ -29,6 +29,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "common_tools.h"
 #include "intl.h"
 #include "util.h"
 #include "gtypes.h"
@@ -77,7 +78,7 @@ static guint old_preview_width, old_preview_height;
 static gboolean enable_auto_refresh = FALSE;
 static guint auto_refresh_func;
 static time_t list_last_modified = 0;
-static gchar root[64];
+static gchar root[256];
 static gint busy_level;
 
 static guint clipboard_size = 0;
@@ -104,8 +105,7 @@ static void print_help_message      ();
 static void file_clipboard_clear    ();
 static void file_clipboard_alloc    (guint num);
 static void file_clipboard_set      (guint num, guchar *file);
-static void file_paste              (guchar *src_file,
-                                       guchar *dest_path,
+static void file_paste              (guchar *src_file, guchar *dest_path,
                                        PasteType type);
 static void menu_edit_paste_internal(gboolean pastelink);
 
@@ -120,8 +120,9 @@ get_current_image(gchar *buffer)
       return FALSE;
    } else
    {
-      strcpy(buffer, current_selected_dir);
-      if (buffer[strlen(buffer) - 1] != '/') strcat(buffer,"/");
+      strncpy(buffer, current_selected_dir, 256);
+      if (buffer[strlen(buffer) - 1] != '/')
+         strcat(buffer,"/");
       strcat(buffer, info->name);
       return TRUE;
    }
@@ -201,11 +202,12 @@ dir_entry_enter(GtkWidget *widget, GtkWidget *entry)
 
    if (busy_level > 0) return;
 
-   strcpy(entry_text, gtk_entry_get_text(GTK_ENTRY(entry)));
-   if (strlen(entry_text) <= 0) return;
+   strncpy(entry_text, gtk_entry_get_text(GTK_ENTRY(entry)), sizeof(entry_text));
+   if (strlen(entry_text) <= 0)
+      return;
    if (entry_text[0] != '/')
    {
-      strcpy(entry_text, current_selected_dir);
+      strncpy(entry_text, current_selected_dir, sizeof(entry_text));
       if (entry_text[strlen(entry_text) - 1] != '/')
          strcat(entry_text, "/");
       strcat(entry_text, gtk_entry_get_text(GTK_ENTRY(entry)));
@@ -304,8 +306,8 @@ file_selected_internal(ImageList *il)
    toolbar_remove_enable(TRUE);
    toolbar_rename_enable(TRUE);
 
-   max_width = preview_image->allocation.width - 4;
-   max_height = preview_image->allocation.height - 4;
+   max_width   = preview_image->allocation.width - 4;
+   max_height  = preview_image->allocation.height - 4;
 
    /* setting status_file(size, date/time) */
    text = fsize(info->size);
@@ -474,10 +476,9 @@ menu_view_refresh(GtkWidget *widget, gpointer data)
 void
 refresh_all()
 {
-   gint serial;
-   ImageInfo *info;
-   GtkAdjustment *vadj;
-   gint pos;
+   gint           serial, pos;
+   ImageInfo      *info;
+   GtkAdjustment  *vadj;
 
    info = image_list_get_selected(IMAGE_LIST(imagelist));
    serial = (info==NULL) ? -1 : info->serial;
@@ -529,7 +530,7 @@ menu_edit_copy(GtkWidget *widget, gpointer data)
    while (selection != NULL)
    {
       info = image_list_get_by_serial(IMAGE_LIST(imagelist),
-         (guint)selection->data);
+               (guint)selection->data);
       sprintf(buf, "%s/%s", IMAGE_LIST(imagelist)->dir, info->name);
       file_clipboard_set(counter++, buf);
       selection = g_list_next(selection);
@@ -597,27 +598,25 @@ menu_edit_paste_internal(gboolean pastelink)
 }
 
 void
-menu_edit_delete(GtkWidget *widget, gpointer data)
+menu_edit_rename(GtkWidget *widget, gpointer data)
 {
    GList *selection;
-   ImageInfo *info;
-   char buf[256];
 
    selection = image_list_get_selection(IMAGE_LIST(imagelist));
    if (selection == NULL) return;
-   selection = g_list_first(selection);
-   while (selection != NULL)
-   {
-      info = image_list_get_by_serial(IMAGE_LIST(imagelist),
-         (guint)selection->data);
-      sprintf(buf, "rm -f %s/%s",
-         IMAGE_LIST(imagelist)->dir,
-         info->name);
-      system(buf);
-      selection = g_list_next(selection);
-   }
+   rename_file(imagelist, selection);
    file_clipboard_clear();
-   refresh_list();
+}
+
+void
+menu_edit_delete(GtkWidget *widget, gpointer data)
+{
+   GList *selection;
+
+   selection = image_list_get_selection(IMAGE_LIST(imagelist));
+   if (selection == NULL) return;
+   remove_file(imagelist, selection);
+   file_clipboard_clear();
 }
 
 void
@@ -740,6 +739,22 @@ menu_view_sort_by_date(GtkWidget *widget, gpointer data)
    } else
    {
       type = type % 2 + 6;
+   }
+   image_list_set_sort_type(IMAGE_LIST(imagelist), type);
+}
+
+void
+menu_view_sort_by_type(GtkWidget *widget, gpointer data)
+{
+   ImageSortType type;
+
+   type = rc_get_int("image_sort_type");
+   if (type == RC_NOT_EXISTS)
+   {
+      type = IMAGE_SORT_ASCEND_BY_TYPE;
+   } else
+   {
+      type = type % 2 + 8;
    }
    image_list_set_sort_type(IMAGE_LIST(imagelist), type);
 }
@@ -977,7 +992,7 @@ main (int argc, char *argv[])
    {
       if (getenv("HOME"))
       {
-         strcpy(root, getenv("HOME"));
+         strncpy(root, getenv("HOME"), sizeof(root));
       }
       else
       {
@@ -985,7 +1000,7 @@ main (int argc, char *argv[])
       }
    } else
    {
-      strcpy(root, r);
+      strncpy(root, r, sizeof(root));
    }
 
    /* Search command line options */
@@ -994,7 +1009,9 @@ main (int argc, char *argv[])
       switch(option)
       {
          case 'R':
-            if (stat(optarg, &st) != 0)
+            strncpy(root, optarg, sizeof(root));
+
+            if (stat(root, &st) != 0)
             {
                printf("Error: cannot stat directory.\n");
                _exit(0);
@@ -1006,17 +1023,16 @@ main (int argc, char *argv[])
                _exit(0);
             }
 
-            strcpy(root, optarg);
             break;
 
          case 'r':
 
 #ifdef HAVE_GETCWD
-            getcwd(root, 64);
+            getcwd(root, sizeof(root));
 #else
             if (getenv("HOME"))
             {
-               strcpy(root, getenv("HOME"));
+               strcnpy(root, getenv("HOME"), sizeof(root));
             }
             else
             {
@@ -1060,7 +1076,7 @@ main (int argc, char *argv[])
       if (stat(argv[optind], &st) != 0)
          continue;
 
-      strcpy(info.name, argv[optind]);
+      strncpy(info.name, argv[optind], sizeof(info.name));
       info.type = UNKNOWN;
       info.size = st.st_size;
       if (detect_image_type(argv[optind], &info))
@@ -1129,7 +1145,7 @@ gtksee_main()
 
    /* creating dirtree */
 #ifdef HAVE_GETCWD
-   getcwd(wd, 256);
+   getcwd(wd, sizeof(wd));
 #else
    strcpy(wd, "/");
 #endif
@@ -1277,14 +1293,8 @@ gtksee_main()
    gtk_widget_show(window);
 
    /* selecting current working directory */
-/*
-#ifdef HAVE_GETCWD
-   getcwd(wd, 256);
-#else
-   strcpy(wd, "/");
-#endif
-*/
-   strcpy(wd, root);
+
+   strncpy(wd, root, sizeof(wd));
    pos = dirtree_select_dir(DIRTREE(tree), wd);
 
    if (pos >=0) {

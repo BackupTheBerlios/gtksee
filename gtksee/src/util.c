@@ -28,28 +28,27 @@
 char*
 fnumber(long num)
 {
-	char *result,n[30];
-	int len, pre, i, suf, pointer;
+	static char    result[30];
+   char           n[30];
+	int            len, pre, i, suf, pointer;
 
-	result = (char *)malloc(30 * sizeof(char));
 	sprintf(n, "%li", num);
 	len = strlen(n);
-	pre = len % 3;
-	i = pre = (pre>0?pre:3);
-	pointer = 0;
-	while (i > 0)
+   pre = (len % 3);
+   i   = pre = (pre>0 ? pre : 3);
+   pointer = 0;
+
+   for (i=pre; i>0; i--, pointer ++)
 	{
-		result[pointer++] = n[pointer];
-		i--;
+		result[pointer] = n[pointer];
 	}
-	suf = len - pre;
-	while (suf > 0)
+
+   for (suf=len - pre; suf > 0; suf-=3)
 	{
 		result[pointer++] = ',';
 		result[pointer++] = n[len - suf];
 		result[pointer++] = n[len - suf + 1];
 		result[pointer++] = n[len - suf + 2];
-		suf -= 3;
 	}
 	result[pointer] = '\0';
 	return result;
@@ -57,21 +56,19 @@ fnumber(long num)
 
 char*
 fsize(long size)
-{	
-	static const char *units[] = {"", "KB", "MB", "GB"};
-	static const int num_units = 4;
+{
+	char        *units[] = {"", "KB", "MB", "GB"};
+	int         num_units = 4;
+   static char result[20];
+	int         t = 0;
+	double      num;
 
-	int t = 0;
-	char *result;
-	double num;
-	
-	result = malloc(20 * sizeof(char));
 	if (size < 1024)
 	{
 		sprintf(result, "%li %s", size, size<=1?"byte":"bytes");
 		return result;
 	}
-	
+
 	num = size * 1.0;
 	while (t < num_units - 1 && num >=1024)
 	{

@@ -17,6 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+ * 2003-09-12: - Changed reading of directory
+ *             - Little improved of code
+ */
+
 #include "config.h"
 
 #define SCROLLBAR_HEIGHT 30
@@ -25,26 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include <sys/types.h>
-
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
-
-#include <sys/stat.h>
 
 #include "gtypes.h"
 #include "util.h"
@@ -54,8 +39,6 @@
 #include "imagelist.h"
 #include "imagetnitem.h"
 #include "imagetnlist.h"
-
-#define SUFFIX(str, suf) (strstr(str,suf)>str)
 
 enum
 {
@@ -78,6 +61,7 @@ static void
 image_tnlist_class_init(ImageTnListClass *class)
 {
    GtkObjectClass *object_class;
+
    object_class = (GtkObjectClass*) class;
    image_tnlist_signals[SELECT_IMAGE_SIGNAL] = gtk_signal_new ("select_image",
       GTK_RUN_FIRST,
@@ -93,16 +77,17 @@ image_tnlist_init(ImageTnList *il)
 {
    int t;
 
-   il -> dir [0] = '\0';
-   il -> selected_item [0] = '\0';
-   il -> selected_widget = NULL;
    t = rc_get_int("image_sort_type");
-   il -> sort_type = (t == RC_NOT_EXISTS ? IMAGE_SORT_ASCEND_BY_NAME : t);
-   il -> max_width = 1;
-   il -> info = NULL;
-   il -> lock = FALSE;
-   il -> nfiles = 0;
-   il -> total_size = 0;
+
+   il -> dir [0]           = '\0';
+   il -> selected_item [0] = '\0';
+   il -> selected_widget   = NULL;
+   il -> sort_type         = (t == RC_NOT_EXISTS ? IMAGE_SORT_ASCEND_BY_NAME : t);
+   il -> max_width         = 1;
+   il -> info              = NULL;
+   il -> lock              = FALSE;
+   il -> nfiles            = 0;
+   il -> total_size        = 0;
 }
 
 void
@@ -123,6 +108,7 @@ image_tnlist_selected(GtkWidget *widget, GdkEvent *event, ImageTnList *il)
 
    info = gtk_object_get_user_data(GTK_OBJECT(widget));
    strcpy(il->selected_item, info->name);
+
    il->info = info;
    gtk_widget_set_state(widget, GTK_STATE_SELECTED);
    gtk_signal_emit(GTK_OBJECT(il), image_tnlist_signals[SELECT_IMAGE_SIGNAL]);
@@ -154,10 +140,11 @@ GtkWidget*
 image_tnlist_new()
 {
    ImageTnList *il;
-   GtkWidget *scrolled_win;
+   GtkWidget   *scrolled_win;
 
    il = IMAGE_TNLIST(gtk_type_new(image_tnlist_get_type()));
-   scrolled_win = gtk_scrolled_window_new(NULL, NULL);
+
+   scrolled_win   = gtk_scrolled_window_new(NULL, NULL);
    gtk_widget_show(GTK_WIDGET(il));
 #ifdef GTK_HAVE_FEATURES_1_1_5
    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_win), GTK_WIDGET(il));
@@ -228,107 +215,20 @@ image_tnlist_clear(ImageTnList *il)
 void
 image_tnlist_refresh(ImageTnList *il)
 {
-   DIR *dp;
-   struct dirent *item;
-   guchar fullname[256];
-   struct stat st;
-   GList *list, *t_pos;
-   ImageInfo *info;
-   gint type, rows, columns, serial;
-   GtkWidget *table, *img;
+   guchar      fullname[256];
+   GList       *list, *t_pos;
+   ImageInfo   *info;
+   gint        rows, columns, serial;
+   GtkWidget   *table, *img;
 
    if (il->lock || strlen(il->dir) < 1) return;
 
    image_tnlist_clear(il);
 
    il->lock = TRUE;
-   if ((dp = opendir(il->dir)) == NULL) return;
-   list = NULL;
 
-   il -> nfiles = 0;
-   il -> total_size = 0;
-   while ((item = readdir(dp)) != NULL)
-   {
-      if (item -> d_ino == 0) continue;
-      if (strcmp(item -> d_name, ".") == 0) continue;
-      if (strcmp(item -> d_name, "..") == 0) continue;
-      strcpy(fullname, il->dir);
-      if (fullname[strlen(fullname) - 1] != '/') strcat(fullname,"/");
-      strcat(fullname, item -> d_name);
-      if (stat(fullname, &st) != 0) continue;
-      if ((st.st_mode & S_IFMT) != S_IFREG) continue;
-      if (SUFFIX(item -> d_name, ".xpm") ||
-          SUFFIX(item -> d_name, ".XPM")) type = XPM;
-      else if (SUFFIX(item -> d_name, ".gif") ||
-          SUFFIX(item -> d_name, ".GIF")) type = GIF;
-      else if (SUFFIX(item -> d_name, ".jpg") ||
-          SUFFIX(item -> d_name, ".JPG") ||
-          SUFFIX(item -> d_name, ".jpeg") ||
-          SUFFIX(item -> d_name, ".JPEG")) type = JPG;
-      else if (SUFFIX(item -> d_name, ".bmp") ||
-          SUFFIX(item -> d_name, ".BMP")) type = BMP;
-      else if (SUFFIX(item -> d_name, ".ico") ||
-          SUFFIX(item -> d_name, ".ICO")) type = ICO;
-      else if (SUFFIX(item -> d_name, ".pcx") ||
-          SUFFIX(item -> d_name, ".PCX")) type = PCX;
-      else if (SUFFIX(item -> d_name, ".tif") ||
-          SUFFIX(item -> d_name, ".TIF") ||
-          SUFFIX(item -> d_name, ".tiff") ||
-          SUFFIX(item -> d_name, ".TIFF")) type = TIF;
-      else if (SUFFIX(item -> d_name, ".png") ||
-          SUFFIX(item -> d_name, ".PNG")) type = PNG;
-      else if (SUFFIX(item -> d_name, ".ppm") ||
-          SUFFIX(item -> d_name, ".PPM") ||
-          SUFFIX(item -> d_name, ".pnm") ||
-          SUFFIX(item -> d_name, ".PNM") ||
-          SUFFIX(item -> d_name, ".pgm") ||
-          SUFFIX(item -> d_name, ".PGM") ||
-          SUFFIX(item -> d_name, ".pbm") ||
-          SUFFIX(item -> d_name, ".PBM")) type = PNM;
-      else if (SUFFIX(item -> d_name, ".psd") ||
-          SUFFIX(item -> d_name, ".PSD")) type = PSD;
-      else if (SUFFIX(item -> d_name, ".xbm") ||
-          SUFFIX(item -> d_name, ".XBM") ||
-          SUFFIX(item -> d_name, ".icon") ||
-          SUFFIX(item -> d_name, ".ICON") ||
-          SUFFIX(item -> d_name, ".bitmap") ||
-          SUFFIX(item -> d_name, ".BITMAP")) type = XBM;
-      else if (SUFFIX(item -> d_name, ".xcf") ||
-          SUFFIX(item -> d_name, ".XCF")) type = XCF;
-      else type = UNKNOWN;
-      info = g_malloc(sizeof(ImageInfo));
-      info -> type = type;
-      strcpy(info -> name, item -> d_name);
-      info -> size = st.st_size;
-      info -> time = st.st_mtime;
-      info -> width = -1;
-      info -> height = -1;
-      info -> has_desc = FALSE;
-      info -> ncolors = -1;
-      info -> real_ncolors = TRUE;
-      info -> alpha = 0;
-      info -> bpp = 0;
-      info -> loaded = FALSE;
-      info -> cache.buffer = NULL;
-      info -> valid = TRUE;
-      /*
-       * We should detect image type and setup header imformations
-       */
-      detect_image_type(fullname, info);
-      if (info->width < 0 || info->type == UNKNOWN)
-      {
-         /* Do not show this image in the list */
-         g_free(info);
-         continue;
-      }
-      info -> type_pixmap = image_type_get_pixmap(info->type);
-      info -> type_mask = image_type_get_mask(info->type);
-      list = g_list_insert_sorted(list, info, image_list_get_sort_func(il->sort_type));
-      il -> nfiles ++;
-      il -> total_size += info -> size;
-   }
-   g_free(item);
-   closedir(dp);
+   list = image_get_load_file(il->dir, &il->nfiles, &il->total_size,
+                                 il->sort_type, IS_THUMB);
 
    columns = max(1, (il->max_width-SCROLLBAR_HEIGHT) / (THUMBNAIL_WIDTH+4));
    if (il->nfiles == 0)
@@ -424,7 +324,8 @@ image_tnlist_create_item(ImageTnList *il, ImageInfo *info)
    item = image_tnitem_new(info->name);
    if (info->type < UNKNOWN)
    {
-      image_type_get_color(info->type, &color);
+      //image_type_get_color(info->type, &color);
+      color = image_type_get_color(info->type);
       image_tnitem_set_color(IMAGE_TNITEM(item), &color);
    }
    gtk_signal_connect(
@@ -432,6 +333,7 @@ image_tnlist_create_item(ImageTnList *il, ImageInfo *info)
       "button_press_event",
       GTK_SIGNAL_FUNC(image_tnlist_selected),
       il);
+
    gtk_widget_show(item);
 
    gtk_object_set_user_data(GTK_OBJECT(item), info);
