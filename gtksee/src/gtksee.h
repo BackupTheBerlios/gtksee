@@ -33,6 +33,8 @@ void     show_browser      ();
 void     gtksee_set_root   (guchar *new_root);
 void     menu_edit_rename  (GtkWidget *widget, gpointer data);
 void     menu_edit_delete  (GtkWidget *widget, gpointer data);
+void     menu_help_contents(GtkWidget *widget, gpointer data);
+void     menu_help_about   (GtkWidget *widget, gpointer data);
 void     gtksee_main       ();
 
 #ifdef __cplusplus

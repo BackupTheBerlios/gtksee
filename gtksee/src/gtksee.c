@@ -95,7 +95,6 @@ static void clear_preview_box       ();
 static void auto_refresh_list       ();
 static void show_viewer             ();
 static gint imagelist_doubleselect  (GtkWidget * widget, GdkEventButton * event);
-static void print_help_message      ();
 
 static void file_clipboard_clear    ();
 static void file_clipboard_alloc    (guint num);
@@ -967,21 +966,6 @@ imagelist_doubleselect (GtkWidget * widget, GdkEventButton * event)
       menu_file_view(widget, NULL);
    }
    return FALSE;
-}
-
-static void
-print_help_message()
-{
-   printf("Usage: gtksee [-R[directory]] [-rfisvh] [files...]\n");
-   printf("  -r               Use current directory as root\n");
-   printf("  -R<directory>    Use <directory> as root\n");
-   printf("  -f               Enable full-screen mode\n");
-   printf("  -i               Enable fit-screen mode\n");
-   printf("  -s               Enable slide-show mode\n");
-   printf("  -v               Print package version\n");
-   printf("  -h               Print this help message\n");
-   printf("  files...         Launch gtksee viewer\n");
-   _exit(0);
 }
 
 int

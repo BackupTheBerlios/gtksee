@@ -30,6 +30,7 @@
 #define CONTENTS  2
 
 void  generate_dialog    (gchar type);
+void  print_help_message ();
 
 #ifdef __cplusplus
         }

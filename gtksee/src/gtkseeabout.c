@@ -18,7 +18,7 @@
  */
 
 /*
- * 2004-05-20: Code based in code from XMMS
+ * 2004-05-20: Code based in code taked from XMMS
  */
 
 #include "config.h"
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <gtk/gtk.h>
 
 #include "intl.h"
@@ -113,20 +114,15 @@ static guchar *legal_text[] =
 static guchar *usage_text[] = {
    "#",
    N_("Command-line usage:\n"),
-   N_(" gtksee [-R<directory>] [-L<locale>] [-Z<value>]\n"),
-   N_("        [-V<program>] [-cfivsh] [<files>]\n"),
-   N_("  -R<directory>  --  Use <directory> as root\n"),
-   N_("  -R=            --  Use previous root directory\n"),
-   N_("  -L<locale>     --  Use <locale> as language\n"),
-   N_("  -Z<value>      --  Set initial screen percent factor\n"),
-   N_("  -V<program>    --  Use <program> as external viewer\n"),
-   N_("  -c  --  Enable center-image mode\n"),
-   N_("  -f  --  Enable full-screen mode\n"),
-   N_("  -i  --  Enable fit-screen mode\n"),
-   N_("  -v  --  Print package version\n"),
-   N_("  -s  --  Enable slide-show mode\n"),
-   N_("  -h  --  Print this help message\n"),
-   N_("  <files> --  Launch gtksee with <files>\n\n"),
+   N_(" gtksee [-R[directory]] [-rfisvh] [files...]\n"),
+   N_("  -r               Use current directory as root\n"),
+   N_("  -R<directory>    Use <directory> as root\n"),
+   N_("  -f               Enable full-screen mode\n"),
+   N_("  -i               Enable fit-screen mode\n"),
+   N_("  -s               Enable slide-show mode\n"),
+   N_("  -v               Print package version\n"),
+   N_("  -h               Print this help message\n"),
+   N_("  files...         Launch gtksee viewer\n\n"),
    "#",
    N_("Keyboard shortcuts:\n"),
    N_(" These keys are bound to viewer:\n"),
@@ -140,6 +136,7 @@ static guchar *usage_text[] = {
    "#",
    N_("Mouse hints:\n"),
    N_(" In view mode, double-click on the image to return to the browser.\n\n"),
+   "#",
    N_("Have fun!\n"),
    NULL
 };
@@ -153,21 +150,34 @@ static guchar *known_bugs_text[] = {
 static guchar *feedback_text[] = {
    "#",
    N_("Comments, suggestions and bug-reportings:\n"),
-   N_("    Maintainer: keziah@users.berlios.de\n\n"),
+   N_("  Maintainer: keziah@users.berlios.de\n\n"),
    "#",
    N_("Original feedback:\n"),
    N_("Comments, suggestions and bug-reportings:\n"),
-   N_("    Please send them to my current primary e-mail address:\n"),
+   N_("  Please send them to my current primary e-mail address:\n"),
    "    jkhotaru@mail.sti.com.cn\n\n",
    N_("Imageware:\n"),
-   N_("    I'm always collecting all kinds of images. If you *really* like this program, send your favorite picture(s) to my secondary e-mail address:\n"),
-      "    hotaru@163.net\n",
-   N_("    Keep sending me things. :) And I'll keep on developing this program.\n"),
-   N_("    P.S. My favorite is Anime/Manga. :)\n"),
+   N_("  I'm always collecting all kinds of images. If you *really* like this program, send your favorite picture(s) to my secondary e-mail address:\n"),
+      "  hotaru@163.net\n",
+   N_("  Keep sending me things. :) And I'll keep on developing this program.\n"),
+   N_("  P.S. My favorite is Anime/Manga. :)\n"),
    NULL
 };
 
 /* Begin the code */
+
+void
+print_help_message()
+{
+   gint i = 1;
+   
+   while (*usage_text[i] != '#')
+   {
+      printf("%s", _(usage_text[i++]));
+   }
+
+   _exit(0);
+}
 
 static GtkWidget*
 generate_list(guchar *text[], gboolean sec_space)
