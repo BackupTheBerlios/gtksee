@@ -494,7 +494,7 @@ rename_serie(GtkWidget *il, GList *selection)
    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), button, TRUE, TRUE, 0);
    gtk_signal_connect_object(GTK_OBJECT(button),
          "clicked",
-         GTK_SIGNAL_FUNC(gtk_widget_destroy),
+         GTK_SIGNAL_FUNC(close_dialog),
          (gpointer)dialog);
    gtk_widget_show(button);
 

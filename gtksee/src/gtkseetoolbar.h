@@ -39,6 +39,7 @@ GtkWidget*	get_main_toolbar	(GtkWidget *parent);
 void		toolbar_view_enable	(gboolean e);
 void		toolbar_remove_enable	(gboolean e);
 void		toolbar_rename_enable	(gboolean e);
+void		toolbar_timestamp_enable(gboolean e);
 void		toolbar_set_list_type	(ImageListType type);
 
 #ifdef __cplusplus

@@ -31,6 +31,7 @@
 
 #include "common_tools.h"
 #include "intl.h"
+#include "timestamp.h"
 #include "util.h"
 #include "gtypes.h"
 #include "detect.h"
@@ -299,6 +300,7 @@ file_selected_internal(ImageList *il)
 
    toolbar_remove_enable(TRUE);
    toolbar_rename_enable(TRUE);
+   toolbar_timestamp_enable(TRUE);
 
    max_width   = preview_image->allocation.width - 4;
    max_height  = preview_image->allocation.height - 4;
@@ -429,6 +431,7 @@ file_unselected(ImageList *il)
 
    toolbar_remove_enable(FALSE);
    toolbar_rename_enable(FALSE);
+   toolbar_timestamp_enable(FALSE);
 }
 
 /* This method is called from image viewer */
@@ -616,6 +619,17 @@ menu_edit_rename(GtkWidget *widget, gpointer data)
    selection = image_list_get_selection(IMAGE_LIST(imagelist));
    if (selection == NULL) return;
    rename_file(imagelist, selection);
+   file_clipboard_clear();
+}
+
+void
+menu_edit_timestamp(GtkWidget *widget, gpointer data)
+{
+   GList *selection;
+
+   selection = image_list_get_selection(IMAGE_LIST(imagelist));
+   if (selection == NULL) return;
+   timestamp_file(imagelist, selection);
    file_clipboard_clear();
 }
 
@@ -955,6 +969,7 @@ refresh_status()
    set_status_prop("");
    toolbar_remove_enable(FALSE);
    toolbar_rename_enable(FALSE);
+   toolbar_timestamp_enable(FALSE);
    toolbar_view_enable(image_list_get_first(IMAGE_LIST(imagelist)) != NULL);
 }
 

@@ -30,6 +30,7 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
+#include "common_tools.h"
 #include "pixmaps/gtksee.xpm"
 #include "gtkseeabout.h"
 
@@ -170,7 +171,7 @@ void
 print_help_message()
 {
    gint i = 1;
-   
+
    while (*usage_text[i] != '#')
    {
       printf("%s", _(usage_text[i++]));
@@ -358,12 +359,16 @@ generate_dialog(gchar type)
    if (window)
       return;
 
+
    window = gtk_window_new(GTK_WINDOW_DIALOG);
    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
    gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(window), 10);
+   gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+   gtk_grab_add(window);
+
    gtk_signal_connect(GTK_OBJECT(window), "destroy",
-            GTK_SIGNAL_FUNC(gtk_widget_destroyed), &window);
+            GTK_SIGNAL_FUNC(close_dialog), &window);
    gtk_widget_realize(window);
 
    vbox = gtk_vbox_new(FALSE, 5);
@@ -404,7 +409,7 @@ generate_dialog(gchar type)
 
    close_btn = gtk_button_new_with_label(_("Close"));
    gtk_signal_connect_object(GTK_OBJECT(close_btn), "clicked",
-              GTK_SIGNAL_FUNC(gtk_widget_destroy),
+              GTK_SIGNAL_FUNC(close_dialog),
               GTK_OBJECT(window));
    GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
    gtk_box_pack_start(GTK_BOX(vbox), close_btn, TRUE, TRUE, 0);

@@ -182,6 +182,10 @@ get_main_menu(GtkWidget *window)
       GTK_SIGNAL_FUNC(menu_edit_rename),
       accel, GDK_R, GDK_CONTROL_MASK);
 
+   create_menu_item(GTK_MENU(menu), _("Timestamp"),
+      GTK_SIGNAL_FUNC(menu_edit_timestamp),
+      accel, GDK_T, GDK_CONTROL_MASK);
+
    create_menu_item(GTK_MENU(menu), _("Delete"),
       GTK_SIGNAL_FUNC(menu_edit_delete),
       NULL, 0, 0);

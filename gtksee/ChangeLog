@@ -8,6 +8,7 @@ Other:
    o EPS image format supported (need GhostSCript installed).
    o SGI image format supported.
    o Added Rename Sequence function.
+   o Added Timestamp function.
    o Improvement in code source.
 i18n:
    o Added Polish translation

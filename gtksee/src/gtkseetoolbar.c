@@ -38,6 +38,7 @@
 #include "pixmaps/rename.xpm"
 #include "pixmaps/about.xpm"
 #include "pixmaps/thumbnails.xpm"
+#include "pixmaps/timestamp.xpm"
 #include "pixmaps/details.xpm"
 #include "pixmaps/small_icons.xpm"
 
@@ -46,6 +47,7 @@ static GdkColor*  get_main_tooltips_bgcolor  ();
 static tool_parameters  params;
 static GtkWidget        *remove_button, *rename_button, *view_button;
 static GtkWidget        *thumbnails_button, *small_icons_button, *details_button;
+static GtkWidget        *timestamp_button;
 
 void
 toolbar_remove_enable(gboolean e)
@@ -57,6 +59,12 @@ void
 toolbar_rename_enable(gboolean e)
 {
    gtk_widget_set_sensitive(rename_button, e);
+}
+
+void
+toolbar_timestamp_enable(gboolean e)
+{
+   gtk_widget_set_sensitive(timestamp_button, e);
 }
 
 void
@@ -171,6 +179,21 @@ get_main_toolbar(GtkWidget *parent)
                      pixmap_wid,
                      GTK_SIGNAL_FUNC(menu_edit_rename),
                      (gpointer)&params);
+
+   pixmap = gdk_pixmap_create_from_xpm_d(
+                     parent->window,
+                     &mask, &style->bg[GTK_STATE_NORMAL],
+                     (gchar **)timestamp_xpm);
+
+   pixmap_wid = gtk_pixmap_new(pixmap, mask);
+   gtk_widget_show(pixmap_wid);
+
+   timestamp_button = gtk_toolbar_append_item(
+                        GTK_TOOLBAR(toolbar),
+                        NULL, _("Timestamp"), NULL,
+                        pixmap_wid,
+                        GTK_SIGNAL_FUNC(menu_edit_timestamp),
+                        (gpointer)&params);
 
    gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
