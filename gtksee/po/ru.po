@@ -1,0 +1,570 @@
+# Russian messages for GTKSee.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Unofficial translation by Dmitry Goroh (aka Daemon) <cooldaemon@inbox.ru>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gtksee-0.5.5\n"
+"POT-Creation-Date: 2003-11-12 02:34-0300\n"
+"PO-Revision-Date: 2003-11-12 20:15+0200\n"
+"Last-Translator: Dmitry Goroh <cooldaemon@inbox.ru>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=KOI8-R\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/common_tools.c:65 src/common_tools.c:287
+msgid "ok"
+msgstr "ok"
+
+#: src/common_tools.c:108
+msgid "Problem deleting file!"
+msgstr "Не могу удалить файл!"
+
+#: src/common_tools.c:157 src/gtkseetoolbar.c:155
+msgid "Remove"
+msgstr "Удалить"
+
+#: src/common_tools.c:165
+#, fuzzy, c-format
+msgid "Do you really want to remove %i file(s) ?"
+msgstr "Вы действительно хотите удалить %i файл(ов)?"
+
+#: src/common_tools.c:171
+msgid "yes"
+msgstr "Да"
+
+#: src/common_tools.c:182
+msgid "no"
+msgstr "Нет"
+
+#: src/common_tools.c:223
+msgid "Problem in rename file!"
+msgstr "Не могу переименовать файл!"
+
+#: src/common_tools.c:227
+#, fuzzy
+msgid "File exist !"
+msgstr "Файл уже существует !"
+
+#: src/common_tools.c:233
+msgid "Same filename !"
+msgstr "Одинаковое имя файла !"
+
+#: src/common_tools.c:235
+msgid "No filename !"
+msgstr "Нет файла с таким именем !"
+
+#: src/common_tools.c:259 src/gtkseemenu.c:181 src/gtkseetoolbar.c:170
+msgid "Rename"
+msgstr "Переименовать"
+
+#: src/common_tools.c:269
+msgid "Rename file:"
+msgstr "Переименовать файл:"
+
+#: src/common_tools.c:297
+msgid "cancel"
+msgstr "отменить"
+
+#: src/common_tools.c:308
+msgid "Impossible to rename the files"
+msgstr "Невозможно переименовать файлы"
+
+#: src/common_tools.c:322
+msgid "-adobe-helvetica-bold-r-normal--*-180-*-*-*-*-*-*"
+msgstr "-cronyx-courier-medium-r-normal--*-120-*-*-*-*-koi8-r"
+
+#: src/common_tools.c:328
+msgid "-adobe-times-medium-r-normal--*-140-*-*-*-*-*-*"
+msgstr "-cronyx-courier-medium-r-normal--*-120-*-*-*-*-koi8-r"
+
+#. creating OK button
+#: src/common_tools.c:359 src/gtkseeabout.c:148
+msgid "O K"
+msgstr "O K"
+
+#. set status_main(total files and size)
+#: src/gtksee.c:939
+#, c-format
+msgid "Total %i file(s) (%s)"
+msgstr "Всего %i файл(ов) (%s)"
+
+#: src/gtkseeabout.c:97
+#, fuzzy
+msgid ""
+"\n"
+"(c)1998-? Lee Luyang(Hotaru), China"
+msgstr "(c)1998-? Lee Luyang(Hotaru), China"
+
+#. creating license
+#: src/gtkseeabout.c:119
+msgid "This software is distributed under"
+msgstr "Эта программа распространяется на основании"
+
+#: src/gtkseeabout.c:123
+msgid "GPL Version 2"
+msgstr "GPL Версии 2"
+
+#: src/gtkseeabout.c:127
+msgid "See the 'COPYING' file for details\n"
+msgstr "Подробности смотрите в файле 'COPYING'\n"
+
+#. File menu
+#: src/gtkseemenu.c:132
+msgid "File"
+msgstr "Файл"
+
+#. View menu
+#: src/gtkseemenu.c:134 src/gtkseemenu.c:196 src/gtkseetoolbar.c:139
+msgid "View"
+msgstr "Вид"
+
+#: src/gtkseemenu.c:144
+msgid "Full-view"
+msgstr "Полномасштабный вид"
+
+#: src/gtkseemenu.c:156
+msgid "Quit"
+msgstr "Выход"
+
+#. Edit menu
+#: src/gtkseemenu.c:161
+msgid "Edit"
+msgstr "Правка"
+
+#: src/gtkseemenu.c:163
+msgid "Cut"
+msgstr "Вырезать"
+
+#: src/gtkseemenu.c:167
+msgid "Copy"
+msgstr "Копировать"
+
+#: src/gtkseemenu.c:171
+msgid "Paste"
+msgstr "Вставить"
+
+#: src/gtkseemenu.c:175
+msgid "Paste hard-link"
+msgstr "Вставить жесткую ссылку"
+
+#: src/gtkseemenu.c:185
+msgid "Delete"
+msgstr "Удалить"
+
+#: src/gtkseemenu.c:191
+msgid "Select all"
+msgstr "Выделить все"
+
+#: src/gtkseemenu.c:198 src/gtkseetoolbar.c:188
+msgid "Thumbnails"
+msgstr "Тумбы"
+
+#: src/gtkseemenu.c:210 src/gtkseetoolbar.c:204
+msgid "Small icons"
+msgstr "Маленькие иконки"
+
+#: src/gtkseemenu.c:222 src/gtkseetoolbar.c:220
+msgid "Details"
+msgstr "Детали"
+
+#: src/gtkseemenu.c:245
+msgid "Show hidden files"
+msgstr "Показать скрытые файлы"
+
+#: src/gtkseemenu.c:260
+msgid "Hide non-images"
+msgstr "Скрыть не-рисунки"
+
+#: src/gtkseemenu.c:275
+msgid "Fast preview"
+msgstr "Быстрый предпросмотр"
+
+#: src/gtkseemenu.c:285
+msgid "Sort"
+msgstr "Сортировать"
+
+#: src/gtkseemenu.c:288
+msgid "By Name"
+msgstr "по имени"
+
+#: src/gtkseemenu.c:291
+msgid "By Size"
+msgstr "по размеру"
+
+#: src/gtkseemenu.c:294
+msgid "By Property"
+msgstr "по свойствам"
+
+#: src/gtkseemenu.c:297
+msgid "By Date"
+msgstr "по дате"
+
+#: src/gtkseemenu.c:300
+msgid "By Type"
+msgstr "по типу"
+
+#: src/gtkseemenu.c:306
+msgid "Ascend"
+msgstr "по возрастанию"
+
+#: src/gtkseemenu.c:309
+msgid "Descend"
+msgstr "по убыванию"
+
+#: src/gtkseemenu.c:315 src/gtkseetoolbar.c:123 src/viewertoolbar.c:178
+msgid "Refresh"
+msgstr "Обновить"
+
+#: src/gtkseemenu.c:325
+msgid "Quick-refresh"
+msgstr "Быстрое обновление"
+
+#: src/gtkseemenu.c:335
+msgid "Auto-refresh"
+msgstr "Авто-обновление"
+
+#. Tools menu
+#: src/gtkseemenu.c:342
+msgid "Tools"
+msgstr "Инструменты"
+
+#: src/gtkseemenu.c:344 src/viewer.c:757
+msgid "Slide show"
+msgstr "Показ слайдов"
+
+#: src/gtkseemenu.c:348
+msgid "The Gimp"
+msgstr "Правка в Gimp"
+
+#: src/gtkseemenu.c:354
+msgid "Options..."
+msgstr "Опции..."
+
+#. Help menu
+#: src/gtkseemenu.c:359
+msgid "Help"
+msgstr "Помощь"
+
+#: src/gtkseemenu.c:361 src/gtkseemenu.c:423
+msgid "Legal"
+msgstr "Юридическое право"
+
+#: src/gtkseemenu.c:365 src/gtkseemenu.c:481
+msgid "Usage"
+msgstr "Использование"
+
+#: src/gtkseemenu.c:369 src/gtkseemenu.c:498
+msgid "Known-bugs"
+msgstr "Известные ошибки"
+
+#: src/gtkseemenu.c:373 src/gtkseemenu.c:536
+msgid "Feedback"
+msgstr "Отзывы"
+
+#: src/gtkseemenu.c:379 src/gtkseetoolbar.c:237
+msgid "About"
+msgstr "О программе"
+
+#: src/gtkseemenu.c:416
+msgid ""
+"    GTK See is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+msgstr ""
+"    GTK See - бесплатное программное обеспечение; вы можете распространять и/"
+"или модифицировать ее в соответствии с условиями Универсальной Общественной "
+"Лицензии  GNU, опубликованную Фондом Бесплатного ПО, вы можете пользоваться "
+"версией 2 Лицензии или (по вашему выбору) любой более поздней версией.\n"
+"\n"
+
+#: src/gtkseemenu.c:417
+msgid ""
+"    GTK See is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+msgstr ""
+"    GTK See распространяется в надежде, что окажется полезной, но БЕЗ ВСЯКОЙ "
+"ГАРАНТИИ; даже без гарантии подразумеваемой РАБОТОСПОСОБНОСТИ или "
+"ПРИГОДНОСТИ ДЛЯ КАКОЙ-ЛИБО ЦЕЛИ. За деталями обратитесь к Универсальной "
+"Общественной Лицензии GNU.\n"
+"\n"
+
+#: src/gtkseemenu.c:418
+msgid ""
+"    You should have received a copy of the GNU General Public License along "
+"with this program; if not, write to the Free Software Foundation, Inc., 59 "
+"Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+msgstr ""
+"    Вы должны были получить копию Универсальной Общественной Лицензии GNU "
+"вместе с этой программой; если же нет, то напишите об этом в Фонд Свободного ПО "
+"по адресу: 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+
+#: src/gtkseemenu.c:456
+msgid "Command-line usage:\n"
+msgstr "Синтаксис коммандной строки:\n"
+
+#: src/gtkseemenu.c:457
+msgid "    gtksee [-R[directory]] [-fis] [files...]\n"
+msgstr "    gtksee [-R[директория]] [-fis] [файлы...]\n"
+
+#: src/gtkseemenu.c:458
+#, fuzzy
+msgid "      -r  --  Use current directory as root\n"
+msgstr "      -R  --  Использовать текущую директорию как корневую\n"
+
+#: src/gtkseemenu.c:459
+msgid "      -R<directory>  --  Use <directory> as root\n"
+msgstr "      -R<директория>  --  Использовать <директория> как корневую\n"
+
+#: src/gtkseemenu.c:460
+msgid "      -f  --  Enable full-screen mode\n"
+msgstr "      -f  --  Включить полноэкранный режим\n"
+
+#: src/gtkseemenu.c:461
+msgid "      -i  --  Enable fit-screen mode\n"
+msgstr "      -i  --  Включить режим \"вместить в экран\"\n"
+
+#: src/gtkseemenu.c:462
+msgid "      -s  --  Enable slide-show mode\n"
+msgstr "      -s  --  Включить режим показа слайдов\n"
+
+#: src/gtkseemenu.c:463
+msgid "      files... --  Launch gtksee viewer\n"
+msgstr "      файлы... --  Запустить просмотрщик gtksee\n"
+
+#: src/gtkseemenu.c:464
+msgid ""
+"      -h  --  Print help messages\n"
+"\n"
+msgstr ""
+"      -h  --  Вывести справку\n"
+"\n"
+
+#: src/gtkseemenu.c:465
+msgid "Keyboard shortcuts:\n"
+msgstr "Быстрые клавиши:\n"
+
+#: src/gtkseemenu.c:466
+msgid "    These keys are bound to viewer:\n"
+msgstr "    Эти клавиши направляются просмотрщику:\n"
+
+#: src/gtkseemenu.c:467
+msgid "    [Arrow-keys] Move large image\n"
+msgstr "    [Стрелки] Менять увеличение картинки\n"
+
+#: src/gtkseemenu.c:468
+msgid "    [PageUp] Show previous image\n"
+msgstr "    [PageUp] Показать предыдущую картинку\n"
+
+#: src/gtkseemenu.c:469
+msgid "    [PageDown] Show next image\n"
+msgstr "    [PageDown] Показать следующую картинку\n"
+
+#: src/gtkseemenu.c:470
+msgid "    [Home] Show the first image\n"
+msgstr "    [Home] Показать первую картинку\n"
+
+#: src/gtkseemenu.c:471
+msgid "    [End] Show the last image\n"
+msgstr "    [End] Показать последнюю картинку\n"
+
+#: src/gtkseemenu.c:472
+msgid "    [Space] Show next image(loop)\n"
+msgstr "    [Пробел] Показать следующую картинку (по кругу)\n"
+
+#: src/gtkseemenu.c:473
+msgid ""
+"    [Escape] Return to the browser\n"
+"\n"
+msgstr ""
+"    [Escape] Вернуться в проводник\n"
+"\n"
+
+#: src/gtkseemenu.c:474
+msgid "Mouse hints:\n"
+msgstr "\"Мышиные\" подсказки:\n"
+
+#: src/gtkseemenu.c:475
+msgid ""
+"    In view mode, double-click on the image to return to the browser.\n"
+"\n"
+msgstr ""
+"    В режиме просмотра кликните 2 раза на изображении чтобы вернуться в "
+"проводник.\n"
+"\n"
+
+#: src/gtkseemenu.c:476
+msgid "Have fun!\n"
+msgstr "Наслаждайтесь!\n"
+
+#: src/gtkseemenu.c:493
+msgid "None :)\n"
+msgstr "Нету :)\n"
+
+#: src/gtkseemenu.c:521 src/gtkseemenu.c:524
+msgid "Comments, suggestions and bug-reportings:\n"
+msgstr "Комментарии, предложения и сообщения об ошибках:\n"
+
+#: src/gtkseemenu.c:525
+msgid "    Please send them to my current primary e-mail address:\n"
+msgstr "    Пожалуйста, присылайте на мой текущий e-mail адрес:\n"
+
+#: src/gtkseemenu.c:528
+msgid ""
+"    I'm always collecting all kinds of images. If you *really* like this "
+"program, send your favorite picture(s) to my secondary e-mail address:\n"
+msgstr ""
+"    Я всегда коллекционирую разного рода картинки. Если вам "
+"*действительно* нравится эта программа, отошлите ваши любимые рисунки на мой "
+"второй e-mail адрес:\n"
+
+#: src/gtkseemenu.c:530
+msgid ""
+"    Keep sending me things. :) And I'll keep on developing this program.\n"
+msgstr ""
+"    Продолжайте присылать мне разные вещи. :) А я буду и дальше "
+"заниматься разработкой этой программы.\n"
+
+#: src/gtkseemenu.c:531
+msgid "    P.S. My favorite is Anime/Manga. :)\n"
+msgstr "    P.S. Мой любимый жанр это Anime/Manga. :)\n"
+
+#: src/gtkseetoolbar.c:110
+msgid "Up One Level"
+msgstr "Вверх на один уровень"
+
+#: src/imageclist.c:43
+msgid "Name "
+msgstr "Имя "
+
+#: src/imageclist.c:44
+msgid "Size "
+msgstr "Размер "
+
+#: src/imageclist.c:45
+msgid "Image Properties "
+msgstr "Свойства картинки "
+
+#: src/imageclist.c:46
+msgid "Type "
+msgstr "Тип"
+
+#: src/options.c:87
+msgid "Options"
+msgstr "Опции"
+
+#: src/options.c:97 src/options.c:301
+msgid "Root directory"
+msgstr "Корневая директория"
+
+#: src/options.c:139
+msgid "Hidden directories"
+msgstr "Скрытые директории"
+
+#: src/options.c:163
+msgid "File System"
+msgstr "Файловая система"
+
+#: src/options.c:171
+msgid "Interval"
+msgstr "Интервал"
+
+#: src/options.c:221
+msgid "Slide Show"
+msgstr "Показать слайды"
+
+#: src/options.c:228
+msgid " Cancel "
+msgstr " Отмена "
+
+#: src/options.c:235
+msgid " O K "
+msgstr " O K "
+
+#: src/options.c:374
+msgid "second(s)"
+msgstr "секунд(ы)"
+
+#: src/options.c:374
+msgid "minute(s)"
+msgstr "минут(ы)"
+
+#: src/options.c:374
+msgid "hour(s)"
+msgstr "часа(ов)"
+
+#: src/options.c:374
+msgid "day(s)"
+msgstr "день(дней)"
+
+#: src/options.c:386
+msgid "milliseconds, no delay"
+msgstr "миллисекунд, без задержки"
+
+#: src/options.c:396
+#, c-format
+msgid "milliseconds, %i %s"
+msgstr "миллисекунд, %i %s"
+
+#: src/viewer.c:154
+msgid "Invalid"
+msgstr "Неправильное"
+
+#: src/viewer.c:723
+msgid "Next image"
+msgstr "Следующее изображение"
+
+#: src/viewer.c:740
+msgid "Previous image"
+msgstr "Предыдущее изображение"
+
+#: src/viewer.c:780
+msgid "Fit screen"
+msgstr "Вместить в экран"
+
+#: src/viewer.c:801 src/viewertoolbar.c:119
+msgid "Full screen"
+msgstr "На весь экран"
+
+#: src/viewer.c:826
+msgid "Browser"
+msgstr "Проводник"
+
+#: src/viewer.c:832
+msgid "Exit"
+msgstr "Выход"
+
+#: src/viewertoolbar.c:106
+msgid "Browse"
+msgstr "Просмотр"
+
+#: src/viewertoolbar.c:134
+msgid "Previous Image"
+msgstr "Предыдущее Изображение"
+
+#: src/viewertoolbar.c:147
+msgid "Next Image"
+msgstr "Следующее Изображение"
+
+#: src/viewertoolbar.c:163
+msgid "Stop/Resume Slideshow"
+msgstr "Остановить/Продолжить показ слайдов"
+
+#: src/viewertoolbar.c:194
+msgid "Fit Screen"
+msgstr "Вместить в экран"
+
+#: src/viewertoolbar.c:212
+msgid "Rotate -90"
+msgstr "Вращать -90"
+
+#: src/viewertoolbar.c:226
+msgid "Rotate +90"
+msgstr "Вращать +90"
+
