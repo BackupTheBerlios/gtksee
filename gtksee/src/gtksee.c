@@ -67,8 +67,6 @@ GtkWidget *tree, *treewin;
 
 static GtkWidget *browser_window;
 
-static GdkPixmap *gtksee_pixmap;
-static GdkBitmap *gtksee_mask;
 static GdkPixmap *blank_pixmap;
 static GdkBitmap *blank_mask;
 static GdkCursor *watch_cursor;
@@ -1100,6 +1098,7 @@ main (int argc, char *argv[])
    {
       get_viewer_window_with_files(infos);
    }
+
    gtk_main();
    return 0;
 }
@@ -1114,9 +1113,12 @@ gtksee_main()
    GtkWidget      *hpaned, *vpaned, *vbox;
    GtkAdjustment  *vadj;
 
+   GtkStyle       *style;
+   GdkPixmap      *pixmap;
+   GdkBitmap      *mask;
+
    gchar          wd[256];
    gint           pos;
-   GtkStyle       *style;
 
    /* it's safe to disable all events first */
    busy_level = 1;
@@ -1126,22 +1128,14 @@ gtksee_main()
    gtk_signal_connect (GTK_OBJECT(window), "delete_event",
       GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
    gtk_container_border_width(GTK_CONTAINER(window), 2);
+   gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 
    gtk_window_set_title(GTK_WINDOW(window), "GTK See");
    gtk_window_set_wmclass(GTK_WINDOW(window), "browser", "GTKSee");
    gtk_widget_set_uposition(window, 10, 10);
 
    browser_window = window;
-
    gtk_widget_realize(window);
-
-   style = gtk_widget_get_style(window);
-   gtksee_pixmap = gdk_pixmap_create_from_xpm_d(
-      window->window,
-      &gtksee_mask, &style->bg[GTK_STATE_NORMAL],
-      (gchar **)gtksee_xpm);
-   gdk_window_set_icon(window->window, NULL, gtksee_pixmap, gtksee_mask);
-   gdk_window_set_icon_name(window->window, "GTK See");
 
    /* creating dirtree */
 #ifdef HAVE_GETCWD
@@ -1277,6 +1271,7 @@ gtksee_main()
    gtk_container_add(GTK_CONTAINER(window), main_vbox);
 
    /* other values */
+
    scanline_init(gdk_color_context_new(
       gdk_window_get_visual(window->window),
       gdk_window_get_colormap(window->window)),
@@ -1291,6 +1286,16 @@ gtksee_main()
 #endif
 
    gtk_widget_show(window);
+
+   /* Icon of GTK See ... */
+   style = gtk_widget_get_style(window);
+	pixmap = gdk_pixmap_create_from_xpm_d(window->window,
+		         &mask, &style->bg[GTK_STATE_NORMAL],
+		         (gchar **)gtksee_xpm);
+	gdk_window_set_icon(window->window, NULL, pixmap, mask);
+	gdk_window_set_icon_name(window->window, "GTK See Icon");
+   g_free(pixmap);
+   g_free(mask);
 
    /* selecting current working directory */
 
