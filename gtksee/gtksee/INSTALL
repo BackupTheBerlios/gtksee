@@ -1,0 +1,66 @@
+***********************************************************************
+The 0.5.4, 0.5.3 and 0.5.2 releases was compiled under:
+  Slackware 9.0
+    o autoconf (GNU Autoconf) 2.57
+    o automake (GNU automake) 1.7.3
+
+
+The 0.5.1 release was compiled under:
+  FreeBSD 4?5-PRERELEASE
+    o autoconf (GNU Autoconf) 2.52
+    o automake (GNU automake) 1.5
+
+***********************************************************************
+
+
+o System requirements:
+    Required: 1.0.0 <= GTK+ <= ?
+    Optional: libjpeg libtiff libpng wmftogif
+
+    If you don't have these libraries, go to
+
+    ftp://sunsite.unc.edu/pub/Linux/distributions/slackware/source/xap/libgr/
+
+    and get them. Install libgr, and everything should work fine. :)   
+
+    If you want to enable wmf files support you should have wmftogif binary.
+  It's contained in <Caolan.McNamara@ul.ie>'s libwmf package, available at:
+
+    http://www.csn.ul.ie/~caolan/docs/libwmf.html
+
+o Compile and install:
+    1. Choose your favorite icon first. See icons/README.icons
+    2. Then type:
+       $ ./configure
+       $ make
+       $ make install (become root)
+
+o If configure didn't detect your GTK+:
+    Add GTK+ prefix option. For example:
+    ./configure --with-gtk-prefix=/usr/local/gtk
+    Don't forget to set your LD_LIBRARY_PATH first:
+    LD_LIBRARY_PATH=/usr/local/gtk/lib:$LD_LIBRARY_PATH;export LD_LIBRARY_PATH
+
+o If configure didn't detect your libs:
+    Add directory options. For example:
+    ./configure --with-im-incs=/usr/local/include --with-im-libs=/usr/local/lib
+
+o Compiled (or heard people compiled) under:
+
+    Slackware (intel)
+      3.4, 3.5, 4.0, 8.x, 9.0
+    RedHat (intel)
+      5.1, 5.2, 9.0 [thanks Daemon]
+    Solaris (sparc)
+      2.6, 9
+    Debian (intel)
+      2.0
+    Digital Unix V4.0(alpha)
+    FreeBSD (intel)
+      2.2.1, 2.2.7, 3.0
+    HP-UX
+    TurboLinux
+      3.0.2c
+
+    If you have compiled it under other platforms, or failed to
+  compile, please tell me.

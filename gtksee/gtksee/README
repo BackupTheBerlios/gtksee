@@ -1,0 +1,124 @@
+
+Contents
+
+  o Introduction
+  o Install
+  o Copyright
+  o Feedback
+
+
+o Introduction
+
+Original words from Lee Luyang:
+    "This is my first program under X-window systems. I have chosen GTK+
+library, *only* because of chance. :) GTK+ is designed for the GIMP, so
+I think it must be goot at graphics. I decide to port ACD See, which is
+a very popular image viewer in M$ world, into Unix systems by GTK+. That
+is where the name "GTK See" comes from. But the current release is too
+simple, But I will keep working on it, whenever I have time." 
+
+    GTK See's home page is located at:
+
+    http://hotaru.clinuxworld.com/gtksee/ [invalid since a long time]
+    
+    http://gtksee.berlios.de/
+
+    Visit this site for the latest version.
+
+o Install
+
+    Please read the INSTALL_en file.
+
+o Copyright
+
+    From GIMP: scale
+    From GIMP Plug-ins: im_gif im_bmp im_ico im_xbm
+    From GDK: im_xpm
+    All the other codes are original. This software is distributed under
+    GPL Version 2. Please read the COPYING_en for details.
+
+o Feedback
+
+  Comments, suggestions and bug-reportings:
+      Please send them to my current primary e-mail address:
+      jkhotaru@mail.sti.com.cn [invalid since a long time]
+
+  Imageware:
+      I'm always collecting all kinds of images. If you *really* like this
+    program, send your favorite picture(s) to my secondary e-mail address:
+      hotaru@163.net [invalid since a long time]
+      
+      Keep sending me things. :) And I'll keep on developing this program.
+      P.S. My favorite is Anime/Manga. :)
+
+o Contact
+
+    Name: Lee Luyang
+    Nick: Hotaru
+    Country: China
+    E-mail: jkhotaru@mail.sti.com.cn  hotaru@163.net [invalid since a long time]
+    
+  Maintainer:
+    Nick: Keziah
+    E-mail: keziah@users.berlios.de
+    Web: http://gtksee.berlios.de    
+
+Have fun!
+
+------------------------------------------------------------------------
+
+目录
+
+  o 序言
+  o 安装
+  o 版权
+  o 反馈
+
+
+o 序言
+
+    这是我的第一个X-window的程序，我选择GTK+作为开发包完全是由于机缘巧
+合。GTK+是为GIMP设计的，因此图象处理方面应该会比较有优势，于是我决定用
+它将Windows平台上一个极之流行的看图软件ACD See移植到Unix平台，因此两者
+一结合便有GTK See这个命名。目前的版本可能还跟ACD See相差很远，但日后我
+有空会继续增强其功能，发布新版本的。
+    GTK See的主页在：
+
+    http://hotaru.clinuxworld.com/gtksee/ [invalid since a long time]
+    
+    http://gtksee.berlios.de/    
+
+    请到这里下载最新的版本。
+
+o 安装
+
+    请参看INSTALL文件。
+
+o 版权
+
+    来自GIMP: scale
+    来自GIMP Plug-ins: im_gif im_bmp im_ico im_xbm
+    来自GDK: im_xpm
+    其余部分均由作者原创。本软件按GPL第二版形式发布，详见COPYING。
+
+o 反馈
+
+    如有意见和建议可发e-mail到：jkhotaru@mail.sti.com.cn
+    本软件是Imageware：如果你真的喜欢GTK See，请你将你平日最喜欢的一幅图片
+e-mail到：hotaru@163.net
+    欢迎大家继续send图片给我，我会继续开发下去的。
+    P.S. 动漫画图片我最喜欢了。:) 
+
+o 联系
+
+    Name: Lee Luyang
+    Nick: Hotaru
+    Country: China
+    E-mail: jkhotaru@mail.sti.com.cn  hotaru@163.net [invalid since a long time]
+
+  Maintainer:
+    Nick: Keziah
+    E-mail: keziah@users.berlios.de
+    Web: http://gtksee.berlios.de    
+
+Have fun!
