@@ -1,1 +1,1 @@
-SUBDIRS = intl po src
+SUBDIRS = intl po src man
