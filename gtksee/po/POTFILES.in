@@ -1,0 +1,9 @@
+src/common_tools.c
+src/gtksee.c
+src/gtkseeabout.c
+src/gtkseemenu.c
+src/gtkseetoolbar.c
+src/imageclist.c
+src/options.c
+src/viewer.c
+src/viewertoolbar.c
