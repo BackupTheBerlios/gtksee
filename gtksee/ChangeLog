@@ -1,15 +1,38 @@
-0.5.5
+0.5.6
 =======================================================================
-0.5.5
-   o Improvement in PNM, PBM, PPM and PGM files support
-   o Support OS/2 BMP files (version 1.x) [Please, test it !!]
-   o New column Type of File (with ascend and descend sort)
-   o Replace of strcpy for strncpy (in progress ...)
-   o Single or multiple file deleted
-   o New behaviour for Delete action: the selection bar stay
-     in the next file in the list
-   o Use of DELETE key for erase files (in Details list only :(
-   o New code for Rename action
+Other:
+   o EPS image format supported (need GhostSCript installed).
+   o SGI image format supported.
+Bug:
+   o Fixed problem of ICO plugin (wrong color bug)
+      (contributed by Jean-Pierre Demailly)
+
+0.5.5.1
+=======================================================================
+Image Browser:
+   o Show a progress bar while reading a directory.
+   o Sort by file type.
+Other:
+   o TGA image format supported.
+   o XWD image format supported.
+   o SUN RASTER image format supported.
+   o OS/2 BMP (2.2.x, 2.1.x and 1.x) image format supported.
+   o Improvement in PNM, PBM, PPM and PGM files support.
+   o Changes in Delete function:
+      * use Delete key.
+      * delete single or selection of files.
+      * selection bar stay in the next file.
+   o Changes in Rename function.
+i18n:
+   o Added Russian and Ukrainian translation
+      (contributed by Dmitry Goroh)
+Bug:
+   o Fixed GTK See crash when doing "Refresh" in "Small icons"
+     or "Thumbnails" mode.
+      (report by Dmitry Goroh)
+   o Fixed problem when launching GIMP
+      (reported by Jan Keirse and Dmitry Goroh)
+
 
 0.5.4
 =======================================================================
