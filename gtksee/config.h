@@ -4,7 +4,7 @@
 #define PACKAGE "gtksee"
 
 /* Define to the version of the distribution.  */
-#define VERSION "0.5.4"
+#define VERSION "0.5.5"
 
 /* Define if your locale.h file contains LC_MESSAGES.  */
 #define HAVE_LC_MESSAGES 1
@@ -170,6 +170,9 @@
 
 /* Define if your <sys/time.h> declares `struct tm'. */
 /* #undef TM_IN_SYS_TIME */
+
+/* Version number of package */
+#define VERSION "0.5.5"
 
 /* Define if you need to in order for stat and other things to work. */
 /* #undef _POSIX_SOURCE */
