@@ -43,7 +43,7 @@
 
 void     close_dialog   (GtkWidget *widget);
 void     remove_it      (GtkWidget *widget, tool_parameters *param);
-void     rename_it      (GtkWidget *widget, tool_parameters *param);
+void     rename_it      (tool_parameters *param, GtkWidget *widget);
 
 static tool_parameters   param;
 
@@ -99,11 +99,13 @@ remove_it(GtkWidget *widget, tool_parameters *param)
    ImageInfo   *info;
    GList       *buf;
    guint       focus_row, row_list, row = 0;
+   gint        status;
 
 #ifdef GTK_HAVE_FEATURES_1_1_0
    focus_row = GTK_CLIST(IMAGE_LIST(param->il)->child_list)->focus_row;
 #endif
    buf       = param->selection;
+   status    = 0;
 
    /* Delete the files */
    buffer = g_malloc(sizeof(gchar) * 1024);
@@ -111,12 +113,7 @@ remove_it(GtkWidget *widget, tool_parameters *param)
    {
       info = image_list_get_by_serial(IMAGE_LIST(param->il), (guint)(param->selection)->data);
       sprintf(buffer, "%s/%s", IMAGE_LIST(param->il)->dir,info->name);
-
-      if (unlink(buffer) == -1)
-      {
-         alert_dialog(_("Problem deleting file!"));
-         break;
-      }
+      status |= unlink(buffer);
 
       if (info->serial < focus_row)
          row ++;
@@ -149,6 +146,11 @@ remove_it(GtkWidget *widget, tool_parameters *param)
 #endif
 
    close_dialog(param->dialog);
+
+   if (status == -1)
+   {
+      alert_dialog(_("Problem deleting file!"));
+   }
 }
 
 void
@@ -202,7 +204,7 @@ remove_file(GtkWidget *il, GList *selection)
 
 /* Function for rename files */
 void
-rename_it(GtkWidget *widget, tool_parameters *param)
+rename_it(tool_parameters *param, GtkWidget *widget)
 {
    gchar        *buf, *fromfile, *tofile;
    ImageInfo    *info;
@@ -287,20 +289,21 @@ rename_file(GtkWidget *il, GList *selection)
       gtk_entry_set_text(GTK_ENTRY(entry), info->name);
       gtk_entry_set_editable(GTK_ENTRY(entry), TRUE);
       gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry, TRUE, TRUE, 5);
-      gtk_signal_connect(GTK_OBJECT(entry),
-                        "activate",
-                        (GtkSignalFunc)rename_it,
-                        (gpointer)selec);
       selec->entry = entry;
+      gtk_signal_connect_object(GTK_OBJECT(entry),
+                        "activate",
+                        GTK_SIGNAL_FUNC(rename_it),
+                        (gpointer)selec);
       gtk_widget_grab_focus(entry);
       gtk_widget_show(entry);
 
       button = gtk_button_new_with_label(_("ok"));
       gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), button, TRUE, TRUE, 0);
-      gtk_signal_connect(GTK_OBJECT(button),
-         "clicked",
-         GTK_SIGNAL_FUNC(rename_it),
-         (gpointer)selec);
+      gtk_signal_connect_object(GTK_OBJECT(button),
+            "clicked",
+            GTK_SIGNAL_FUNC(rename_it),
+            (gpointer)selec);
+
       GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT);
       gtk_widget_grab_default(button);
       gtk_widget_show(button);

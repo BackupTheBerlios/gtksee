@@ -44,9 +44,13 @@ gint  control;
 
 GtkWidget      *spinner;
 GtkAdjustment  *adj;
-GtkWidget      *entry;
+GtkWidget      *entry_ren;
 GtkWidget      *renameclist;
 GtkWidget      *dialog;
+
+void rename_all(gpointer il, gpointer button);
+void add_filenames(GtkWidget *il, GList *selection);
+void gtk_entry_changed(GtkEditable *entry_ch);
 
 void
 rename_all(gpointer il, gpointer button)
@@ -55,27 +59,34 @@ rename_all(gpointer il, gpointer button)
    gchar       *buf = NULL;
    gchar       *fromfile, *tofile;
    gint        i;
+   gint        status;
 
    fromfile = g_malloc(sizeof(gchar) * 2048);
    tofile   = g_malloc(sizeof(gchar) * 2048);
 
+   status = 0;
    for (i=0; gtk_clist_get_text(GTK_CLIST(renameclist), i, 0, &buf) == 1; i++)
    {
       sprintf(fromfile, "%s/%s", IMAGE_LIST(il)->dir, buf);
       gtk_clist_get_text(GTK_CLIST(renameclist), i, 1, &buf);
       sprintf(tofile,   "%s/%s", IMAGE_LIST(il)->dir, buf);
       info = image_list_get_by_serial(IMAGE_LIST(il), i);
-      strncpy(info->name, tofile, 256);
-      rename(fromfile, tofile);
+      //strncpy(info->name, tofile, 256);
+      status |= rename(fromfile, tofile);
+   }
+
+   close_dialog(dialog);
+
+   if (status != 0)
+   {
+      alert_dialog(_("Problem renaming files!"));
    }
 
    g_free(fromfile);
    g_free(tofile);
 
    refresh_all();
-   close_dialog(dialog);
 }
-
 void
 add_filenames(GtkWidget *il, GList *selection)
 {
@@ -170,7 +181,7 @@ add_number(gchar *buffer, gchar *str, gint *i, gint *j)
 }
 
 void
-gtk_entry_changed(GtkEditable *entry_ch, gpointer data)
+gtk_entry_changed(GtkEditable *entry_ch)
 {
    gchar       *text;
    gchar       *textcell = NULL;
@@ -182,8 +193,6 @@ gtk_entry_changed(GtkEditable *entry_ch, gpointer data)
    gint        inicio;
    gchar       pos_name = 0;
    gint        i, j, k;
-
-   g_return_if_fail (data  != NULL);
 
    put_number = 0;
    put_name   = 0;
@@ -298,7 +307,7 @@ gtk_spin_changed(GtkSpinButton *spin, gpointer data)
    if (control != i)
    {
       control = i;
-      gtk_entry_changed(GTK_EDITABLE(entry), renameclist);
+      gtk_entry_changed(GTK_EDITABLE(entry_ren));
    }
 }
 
@@ -306,7 +315,7 @@ void
 change_state()
 {
    use_old_ext = !use_old_ext;
-   gtk_entry_changed(GTK_EDITABLE(entry), renameclist);
+   gtk_entry_changed(GTK_EDITABLE(entry_ren));
 }
 
 void
@@ -315,7 +324,7 @@ name2normal(GtkWidget *widget, gpointer data)
    if (upperlower != NORMAL)
    {
       upperlower = NORMAL;
-      gtk_entry_changed(GTK_EDITABLE(entry), renameclist);
+      gtk_entry_changed(GTK_EDITABLE(entry_ren));
    }
 }
 
@@ -325,7 +334,7 @@ name2upper(GtkWidget *widget, gpointer data)
    if (upperlower != UPPER)
    {
       upperlower = UPPER;
-      gtk_entry_changed(GTK_EDITABLE(entry), renameclist);
+      gtk_entry_changed(GTK_EDITABLE(entry_ren));
    }
 }
 
@@ -335,7 +344,7 @@ name2lower(GtkWidget *widget, gpointer data)
    if (upperlower != LOWER)
    {
       upperlower = LOWER;
-      gtk_entry_changed(GTK_EDITABLE(entry), renameclist);
+      gtk_entry_changed(GTK_EDITABLE(entry_ren));
    }
 }
 
@@ -381,13 +390,13 @@ rename_serie(GtkWidget *il, GList *selection)
    gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
    gtk_widget_show(label);
 
-   /* Create the entry for template */
-   entry = gtk_entry_new();
-   gtk_entry_set_max_length(GTK_ENTRY(entry), 128);
-   gtk_entry_append_text(GTK_ENTRY(entry), "name_#");
-   gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 0);
-   gtk_widget_grab_focus(entry);
-   gtk_widget_show(entry);
+   /* Create the entry_ren for template */
+   entry_ren = gtk_entry_new();
+   gtk_entry_set_max_length(GTK_ENTRY(entry_ren), 128);
+   gtk_entry_append_text(GTK_ENTRY(entry_ren), "name_#");
+   gtk_box_pack_start(GTK_BOX(vbox), entry_ren, TRUE, TRUE, 0);
+   gtk_widget_grab_focus(entry_ren);
+   gtk_widget_show(entry_ren);
 
    /* Other container */
    hbox = gtk_hbox_new(FALSE, 5);
@@ -465,7 +474,6 @@ rename_serie(GtkWidget *il, GList *selection)
    renameclist = gtk_clist_new_with_titles( 2, titles);
 
    gtk_clist_set_shadow_type (GTK_CLIST(renameclist), GTK_SHADOW_ETCHED_OUT);
-
    gtk_clist_set_column_auto_resize (GTK_CLIST(renameclist), 0, TRUE);
    gtk_clist_set_column_auto_resize (GTK_CLIST(renameclist), 1, TRUE);
    gtk_widget_set_usize(GTK_WIDGET(renameclist), 350, 150);
@@ -477,9 +485,9 @@ rename_serie(GtkWidget *il, GList *selection)
    gtk_widget_show(renameclist);
 
    /* If change the entry, change the clist */
-   gtk_signal_connect (GTK_OBJECT (entry), "changed",
+   gtk_signal_connect (GTK_OBJECT (entry_ren), "changed",
                         (GtkSignalFunc) gtk_entry_changed,
-                        (gpointer) renameclist);
+                        NULL);
 
    /* Create the buttons */
    button = gtk_button_new_with_label(_("O K"));
@@ -504,4 +512,3 @@ rename_serie(GtkWidget *il, GList *selection)
 
    return;
 }
-
