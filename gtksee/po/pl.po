@@ -1,0 +1,565 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Author : Lee Luyang
+msgid ""
+msgstr ""
+"Project-Id-Version: gtksee 0.5.5.1\n"
+"POT-Creation-Date: 2004-05-12 02:34-0300\n"
+"PO-Revision-Date: 2004-05-12\n"
+"Last-Translator: Leszek Pietryka <leszekptr@gazeta.pl>\n"
+"Language-Team: Polish <leszekptr@gazeta.pl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/common_tools.c:65 src/common_tools.c:287
+msgid "ok"
+msgstr "OK"
+
+#: src/common_tools.c:108
+msgid "Problem deleting file!"
+msgstr "Nie mogê usun±æ pliku!"
+
+#: src/common_tools.c:157 src/gtkseetoolbar.c:155
+msgid "Remove"
+msgstr "Usuñ"
+
+#: src/common_tools.c:165
+#, fuzzy, c-format
+msgid "Do you really want to remove %i file(s) ?"
+msgstr "Czy naprawdê chcesz usun±æ %i plik (i/ów) ?"
+
+#: src/common_tools.c:171
+msgid "yes"
+msgstr "Tak"
+
+#: src/common_tools.c:182
+msgid "no"
+msgstr "Nie"
+
+#: src/common_tools.c:223
+msgid "Problem in rename file!"
+msgstr "Nie mogê zmieniæ nazwy pliku!"
+
+#: src/common_tools.c:227
+#, fuzzy
+msgid "File exist !"
+msgstr "Plik istnieje!"
+
+#: src/common_tools.c:233
+msgid "Same filename !"
+msgstr "Plik o takiej nazwie ju¿ istnieje!"
+
+#: src/common_tools.c:235
+msgid "No filename !"
+msgstr "Brak nazwy pliku!"
+
+#: src/common_tools.c:259 src/gtkseemenu.c:181 src/gtkseetoolbar.c:170
+msgid "Rename"
+msgstr "Zmieñ nazwê"
+
+#: src/common_tools.c:269
+msgid "Rename file:"
+msgstr "Zmieñ nazwê pliku:"
+
+#: src/common_tools.c:297
+msgid "cancel"
+msgstr "Anuluj"
+
+#: src/common_tools.c:308
+msgid "Impossible to rename the files"
+msgstr "Nie mogê zmieniæ nazw plików!"
+
+#: src/common_tools.c:322
+msgid "-adobe-helvetica-bold-r-normal--*-180-*-*-*-*-*-*"
+msgstr ""
+
+#: src/common_tools.c:328
+msgid "-adobe-times-medium-r-normal--*-140-*-*-*-*-*-*"
+msgstr ""
+
+#. creating OK button
+#: src/common_tools.c:359 src/gtkseeabout.c:148
+msgid "O K"
+msgstr "OK"
+
+#. set status_main(total files and size)
+#: src/gtksee.c:939
+#, c-format
+msgid "Total %i file(s) (%s)"
+msgstr "Razem %i plik (i) (ów) (%s)"
+
+#: src/gtkseeabout.c:97
+#, fuzzy
+msgid ""
+"\n"
+"(c)1998-? Lee Luyang(Hotaru), China"
+msgstr ""
+"\n"
+"(c)1998-? Lee Luyang(Hotaru), China"
+
+#. creating license
+#: src/gtkseeabout.c:119
+msgid "This software is distributed under"
+msgstr "To oprogramowanie jest rozpowszechniane na licencji "
+
+#: src/gtkseeabout.c:123
+msgid "GPL Version 2"
+msgstr "GPL Wersja 2"
+
+#: src/gtkseeabout.c:127
+msgid "See the 'COPYING' file for details\n"
+msgstr "Szczegó³y w pliku 'COPYING'\n"
+
+#. File menu
+#: src/gtkseemenu.c:132
+msgid "File"
+msgstr "Plik"
+
+#. View menu
+#: src/gtkseemenu.c:134 src/gtkseemenu.c:196 src/gtkseetoolbar.c:139
+msgid "View"
+msgstr "Widok"
+
+#: src/gtkseemenu.c:144
+msgid "Full-view"
+msgstr "Pe³ny widok"
+
+#: src/gtkseemenu.c:156
+msgid "Quit"
+msgstr "Wyjd¼"
+
+#. Edit menu
+#: src/gtkseemenu.c:161
+msgid "Edit"
+msgstr "Edytuj"
+
+#: src/gtkseemenu.c:163
+msgid "Cut"
+msgstr "Wytnij"
+
+#: src/gtkseemenu.c:167
+msgid "Copy"
+msgstr "Kopiuj"
+
+#: src/gtkseemenu.c:171
+msgid "Paste"
+msgstr "Wklej"
+
+#: src/gtkseemenu.c:175
+msgid "Paste hard-link"
+msgstr "Wklej twarde dowi±zanie"
+
+#: src/gtkseemenu.c:185
+msgid "Delete"
+msgstr "Usuñ"
+
+#: src/gtkseemenu.c:191
+msgid "Select all"
+msgstr "Zaznacz wszystko"
+
+#: src/gtkseemenu.c:198 src/gtkseetoolbar.c:188
+msgid "Thumbnails"
+msgstr "Miniatury"
+
+#: src/gtkseemenu.c:210 src/gtkseetoolbar.c:204
+msgid "Small icons"
+msgstr "Ma³e ikony"
+
+#: src/gtkseemenu.c:222 src/gtkseetoolbar.c:220
+msgid "Details"
+msgstr "Szczegó³y"
+
+#: src/gtkseemenu.c:245
+msgid "Show hidden files"
+msgstr "Poka¿ ukryte pliki"
+
+#: src/gtkseemenu.c:260
+msgid "Hide non-images"
+msgstr "Poka¿ tylko pliki obrazów"
+
+#: src/gtkseemenu.c:275
+msgid "Fast preview"
+msgstr "Szybki podgl±d"
+
+#: src/gtkseemenu.c:285
+msgid "Sort"
+msgstr "Sortuj"
+
+#: src/gtkseemenu.c:288
+msgid "By Name"
+msgstr "Wed³ug nazwy"
+
+#: src/gtkseemenu.c:291
+msgid "By Size"
+msgstr "Wed³ug rozmiaru"
+
+#: src/gtkseemenu.c:294
+msgid "By Property"
+msgstr "Wed³ug w³a¶ciwo¶ci"
+
+#: src/gtkseemenu.c:297
+msgid "By Date"
+msgstr "Wed³ug daty"
+
+#: src/gtkseemenu.c:300
+msgid "By Type"
+msgstr "Wed³ug typu"
+
+#: src/gtkseemenu.c:306
+msgid "Ascend"
+msgstr "Rosn±co"
+
+#: src/gtkseemenu.c:309
+msgid "Descend"
+msgstr "Malej±co"
+
+#: src/gtkseemenu.c:315 src/gtkseetoolbar.c:123 src/viewertoolbar.c:178
+msgid "Refresh"
+msgstr "Od¶wie¿"
+
+#: src/gtkseemenu.c:325
+msgid "Quick-refresh"
+msgstr "Od¶wie¿ szybko"
+
+#: src/gtkseemenu.c:335
+msgid "Auto-refresh"
+msgstr "Od¶wie¿ automatycznie"
+
+#. Tools menu
+#: src/gtkseemenu.c:342
+msgid "Tools"
+msgstr "Narzêdzia"
+
+#: src/gtkseemenu.c:344 src/viewer.c:757
+msgid "Slide show"
+msgstr "Pokaz slajdów"
+
+#: src/gtkseemenu.c:348
+msgid "The Gimp"
+msgstr "The Gimp"
+
+#: src/gtkseemenu.c:354
+msgid "Options..."
+msgstr "Opcje..."
+
+#. Help menu
+#: src/gtkseemenu.c:359
+msgid "Help"
+msgstr "Pomoc"
+
+#: src/gtkseemenu.c:361 src/gtkseemenu.c:423
+msgid "Legal"
+msgstr "Licencja i prawa autorskie"
+
+#: src/gtkseemenu.c:365 src/gtkseemenu.c:481
+msgid "Usage"
+msgstr "U¿ycie"
+
+#: src/gtkseemenu.c:369 src/gtkseemenu.c:498
+msgid "Known-bugs"
+msgstr "Znane problemy"
+
+#: src/gtkseemenu.c:373 src/gtkseemenu.c:536
+msgid "Feedback"
+msgstr "Kontakt"
+
+#: src/gtkseemenu.c:379 src/gtkseetoolbar.c:237
+msgid "About"
+msgstr "O programie"
+
+#: src/gtkseemenu.c:416
+msgid ""
+"    GTK See is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+msgstr ""
+"    GTK See is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+
+#: src/gtkseemenu.c:417
+msgid ""
+"    GTK See is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+msgstr ""
+"    GTK See is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+
+#: src/gtkseemenu.c:418
+msgid ""
+"    You should have received a copy of the GNU General Public License along "
+"with this program; if not, write to the Free Software Foundation, Inc., 59 "
+"Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+msgstr ""
+"    You should have received a copy of the GNU General Public License along "
+"with this program; if not, write to the Free Software Foundation, Inc., 59 "
+"Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+
+#: src/gtkseemenu.c:456
+msgid "Command-line usage:\n"
+msgstr "Sk³adnia wiersza poleceñ:\n"
+
+#: src/gtkseemenu.c:457
+msgid "    gtksee [-R[directory]] [-fis] [files...]\n"
+msgstr "    gtksee [-R[katalog]] [-fis] [pliki...]\n"
+
+#: src/gtkseemenu.c:458
+#, fuzzy
+msgid "      -r  --  Use current directory as root\n"
+msgstr "      -r  --  U¿yj bie¿±cego katalogu jako g³ównego\n"
+
+#: src/gtkseemenu.c:459
+msgid "      -R<directory>  --  Use <directory> as root\n"
+msgstr "      -R<katalog>  --  U¿yj <katalog> jako g³ównego\n"
+
+#: src/gtkseemenu.c:460
+msgid "      -f  --  Enable full-screen mode\n"
+msgstr "      -f  --  W³±cz tryb pe³noekranowy\n"
+
+#: src/gtkseemenu.c:461
+msgid "      -i  --  Enable fit-screen mode\n"
+msgstr "      -i  --  W³±cz tryb dopasowania do ekranu\n"
+
+#: src/gtkseemenu.c:462
+msgid "      -s  --  Enable slide-show mode\n"
+msgstr "      -s  --  W³±cz tryb pokazu slajdów\n"
+
+#: src/gtkseemenu.c:463
+msgid "      files... --  Launch gtksee viewer\n"
+msgstr "      pliki... --  W³±cz przegl±darkê gtksee\n"
+
+#: src/gtkseemenu.c:464
+msgid ""
+"      -h  --  Print help messages\n"
+"\n"
+msgstr ""
+"      -h  --  Wy¶wietl informacje o pomocy\n"
+"\n"
+
+#: src/gtkseemenu.c:465
+msgid "Keyboard shortcuts:\n"
+msgstr "Skróty klawiaturowe:\n"
+
+#: src/gtkseemenu.c:466
+msgid "    These keys are bound to viewer:\n"
+msgstr "    Do przegl±darki przypisano nastêpuj±ce klawisze:\n"
+
+#: src/gtkseemenu.c:467
+msgid "    [Arrow-keys] Move large image\n"
+msgstr "    [Strza³ki] Przesuñ du¿y obraz\n"
+
+#: src/gtkseemenu.c:468
+msgid "    [PageUp] Show previous image\n"
+msgstr "    [PageUp] Poka¿ poprzedni obraz\n"
+
+#: src/gtkseemenu.c:469
+msgid "    [PageDown] Show next image\n"
+msgstr "    [PageDown] Poka¿ poprzedni obraz\n"
+
+#: src/gtkseemenu.c:470
+msgid "    [Home] Show the first image\n"
+msgstr "    [Home] Poka¿ pierwszy obraz\n"
+
+#: src/gtkseemenu.c:471
+msgid "    [End] Show the last image\n"
+msgstr "    [End] Poka¿ ostatni obraz\n"
+
+#: src/gtkseemenu.c:472
+msgid "    [Space] Show next image(loop)\n"
+msgstr "    [Spacja] Poka¿ nastêpny obraz (w pêtli)\n"
+
+#: src/gtkseemenu.c:473
+msgid ""
+"    [Escape] Return to the browser\n"
+"\n"
+msgstr ""
+"    [Escape] Wróæ do przegl±darki\n"
+"\n"
+
+#: src/gtkseemenu.c:474
+msgid "Mouse hints:\n"
+msgstr "Podpowiedzi dla korzystania z myszy:\n"
+
+#: src/gtkseemenu.c:475
+msgid ""
+"    In view mode, double-click on the image to return to the browser.\n"
+"\n"
+msgstr ""
+"    Bêd±c w trybie widoku, kliknij dwukrotnie obraz, aby powróciæ do przegl±darki.\n"
+"\n"
+
+#: src/gtkseemenu.c:476
+msgid "Have fun!\n"
+msgstr "Weso³ej zabawy!\n"
+
+#: src/gtkseemenu.c:493
+msgid "None :)\n"
+msgstr "Brak :)\n"
+
+#: src/gtkseemenu.c:521 src/gtkseemenu.c:524
+msgid "Comments, suggestions and bug-reportings:\n"
+msgstr "Komentarze, sugestie, raporty o b³êdach:\n"
+
+#: src/gtkseemenu.c:525
+msgid "    Please send them to my current primary e-mail address:\n"
+msgstr "    Wy¶lij je na mój podstawowy adres e-mail:\n"
+
+#: src/gtkseemenu.c:528
+msgid ""
+"    I'm always collecting all kinds of images. If you *really* like this "
+"program, send your favorite picture(s) to my secondary e-mail address:\n"
+msgstr ""
+"    Kolekcjonujê ró¿ne obrazy. Je¶li NAPRAWDÊ podoba³ Ci siê mój program, wy¶lij swój ulubiony obraz (obrazy) na mój dodatkowy adres e-mail:\n"
+
+#: src/gtkseemenu.c:530
+msgid ""
+"    Keep sending me things. :) And I'll keep on developing this program.\n"
+msgstr "    Wysy³aj mi obrazy. :) A bêdê dalej pracowa³ nad programem.\n"
+
+#: src/gtkseemenu.c:531
+msgid "    P.S. My favorite is Anime/Manga. :)\n"
+msgstr "    P.S. Najbardziej lubiê Anime/Manga. :)\n"
+
+#: src/gtkseetoolbar.c:110
+msgid "Up One Level"
+msgstr "Poziom wy¿ej"
+
+#: src/imageclist.c:43
+msgid "Name "
+msgstr "Nazwa "
+
+#: src/imageclist.c:44
+msgid "Size "
+msgstr "Wielko¶æ "
+
+#: src/imageclist.c:45
+msgid "Image Properties "
+msgstr "W³a¶ciwo¶ci "
+
+#: src/imageclist.c:46
+msgid "Type "
+msgstr "Rodzaj "
+
+#: src/options.c:87
+msgid "Options"
+msgstr "Opcje"
+
+#: src/options.c:97 src/options.c:301
+msgid "Root directory"
+msgstr "Katalog g³ówny"
+
+#: src/options.c:139
+msgid "Hidden directories"
+msgstr "Ukryte katalogi"
+
+#: src/options.c:163
+msgid "File System"
+msgstr "System plików"
+
+#: src/options.c:171
+msgid "Interval"
+msgstr "Odstêp czasu"
+
+#: src/options.c:221
+msgid "Slide Show"
+msgstr "Pokaz slajdów"
+
+#: src/options.c:228
+msgid " Cancel "
+msgstr " Anuluj "
+
+#: src/options.c:235
+msgid " O K "
+msgstr " OK "
+
+#: src/options.c:374
+msgid "second(s)"
+msgstr "Sekunda(y)"
+
+#: src/options.c:374
+msgid "minute(s)"
+msgstr "Minuta(y)"
+
+#: src/options.c:374
+msgid "hour(s)"
+msgstr "Godzina(y)"
+
+#: src/options.c:374
+msgid "day(s)"
+msgstr "Dzieñ (dni)"
+
+#: src/options.c:386
+msgid "milliseconds, no delay"
+msgstr "Milisekuna, bez opó¼nienia"
+
+#: src/options.c:396
+#, c-format
+msgid "milliseconds, %i %s"
+msgstr "Milisekuny, %i %s"
+
+#: src/viewer.c:154
+msgid "Invalid"
+msgstr "Niewa¿ne"
+
+#: src/viewer.c:723
+msgid "Next image"
+msgstr "Nastêpny obraz"
+
+#: src/viewer.c:740
+msgid "Previous image"
+msgstr "Poprzedni obraz"
+
+#: src/viewer.c:780
+msgid "Fit screen"
+msgstr "Dopasuj do ekranu"
+
+#: src/viewer.c:801 src/viewertoolbar.c:119
+msgid "Full screen"
+msgstr "Pe³ny ekran"
+
+#: src/viewer.c:826
+msgid "Browser"
+msgstr "Przegl±darka"
+
+#: src/viewer.c:832
+msgid "Exit"
+msgstr "Zakoñcz"
+
+#: src/viewertoolbar.c:106
+msgid "Browse"
+msgstr "Przegl±daj"
+
+#: src/viewertoolbar.c:134
+msgid "Previous Image"
+msgstr "Poprzedni obraz"
+
+#: src/viewertoolbar.c:147
+msgid "Next Image"
+msgstr "Nastêpny obraz"
+
+#: src/viewertoolbar.c:163
+msgid "Stop/Resume Slideshow"
+msgstr "Wstrzymaj/rozpocznij pokaz slajdów"
+
+#: src/viewertoolbar.c:194
+msgid "Fit Screen"
+msgstr "Dopasuj do ekranu"
+
+#: src/viewertoolbar.c:212
+msgid "Rotate -90"
+msgstr "Obróæ o -90°"
+
+#: src/viewertoolbar.c:226
+msgid "Rotate +90"
+msgstr "Obróæ o +90°"

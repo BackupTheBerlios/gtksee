@@ -4039,7 +4039,7 @@ EOF
 fi
 done
 
-ALL_LINGUAS="zh_CN.EUC fr es de ru ru_UA"
+ALL_LINGUAS="zh_CN.EUC fr es de ru ru_UA pl"
 echo "$as_me:4043: checking for inline" >&5
 echo $ECHO_N "checking for inline... $ECHO_C" >&6
 if test "${ac_cv_c_inline+set}" = set; then

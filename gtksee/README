@@ -15,12 +15,12 @@ library, *only* because of chance. :) GTK+ is designed for the GIMP, so
 I think it must be goot at graphics. I decide to port ACD See, which is
 a very popular image viewer in M$ world, into Unix systems by GTK+. That
 is where the name "GTK See" comes from. But the current release is too
-simple, But I will keep working on it, whenever I have time." 
+simple, But I will keep working on it, whenever I have time."
 
     GTK See's home page is located at:
 
     http://hotaru.clinuxworld.com/gtksee/ [invalid since a long time]
-    
+
     http://gtksee.berlios.de/
 
     Visit this site for the latest version.
@@ -32,7 +32,7 @@ o Install
 o Copyright
 
     From GIMP         : scale
-    From GIMP Plug-ins: im_gif im_bmp im_ico im_xbm im_xwd im_sun
+    From GIMP Plug-ins: im_gif im_bmp im_ico im_xbm im_xwd im_sun im_eps im_sgi
     From Xli          : im_tga
     From GDK          : im_xpm
     All the other codes are original. This software is distributed under
@@ -48,7 +48,7 @@ o Feedback
       I'm always collecting all kinds of images. If you *really* like this
     program, send your favorite picture(s) to my secondary e-mail address:
       hotaru@163.net [invalid since a long time]
-      
+
       Keep sending me things. :) And I'll keep on developing this program.
       P.S. My favorite is Anime/Manga. :)
 
@@ -58,11 +58,11 @@ o Contact
     Nick: Hotaru
     Country: China
     E-mail: jkhotaru@mail.sti.com.cn  hotaru@163.net [invalid since a long time]
-    
+
   Maintainer:
     Nick: Keziah
     E-mail: keziah@users.berlios.de
-    Web: http://gtksee.berlios.de    
+    Web: http://gtksee.berlios.de
 
 Have fun!
 
@@ -86,8 +86,8 @@ o 序言
     GTK See的主页在：
 
     http://hotaru.clinuxworld.com/gtksee/ [invalid since a long time]
-    
-    http://gtksee.berlios.de/    
+
+    http://gtksee.berlios.de/
 
     请到这里下载最新的版本。
 
@@ -98,9 +98,9 @@ o 安装
 o 版权
 
     来自GIMP: scale
-    来自GIMP Plug-ins: im_gif im_bmp im_ico im_xbm im_xwd im_sun
-    来自Xli: im_tga    
-    来自GDK: im_xpm    
+    来自GIMP Plug-ins: im_gif im_bmp im_ico im_xbm im_xwd im_sun im_eps im_sgi
+    来自Xli: im_tga
+    来自GDK: im_xpm
     其余部分均由作者原创。本软件按GPL第二版形式发布，详见COPYING。
 
 o 反馈
@@ -109,7 +109,7 @@ o 反馈
     本软件是Imageware：如果你真的喜欢GTK See，请你将你平日最喜欢的一幅图片
 e-mail到：hotaru@163.net
     欢迎大家继续send图片给我，我会继续开发下去的。
-    P.S. 动漫画图片我最喜欢了。:) 
+    P.S. 动漫画图片我最喜欢了。:)
 
 o 联系
 
@@ -121,6 +121,6 @@ o 联系
   Maintainer:
     Nick: Keziah
     E-mail: keziah@users.berlios.de
-    Web: http://gtksee.berlios.de    
+    Web: http://gtksee.berlios.de
 
 Have fun!

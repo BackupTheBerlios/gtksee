@@ -1,9 +1,20 @@
 0.5.6
 =======================================================================
+Image Viewer
+   o Added 2 features: reflect left/right and up/down
+      (contributed by Jean-Pierre Demailly)
+   o Added feature for save file when reflect or rotate.
 Other:
    o EPS image format supported (need GhostSCript installed).
    o SGI image format supported.
+   o Added Rename Sequence function.
+   o Improvement in code source.
+i18n:
+   o Added Polish translation
+      (contributed by Leszek Pietryka)
 Bug:
+   o Improvement in im_xcf.c and im_psd.c files
+      (contributed by Jean-Pierre Demailly)
    o Fixed problem of ICO plugin (wrong color bug)
       (contributed by Jean-Pierre Demailly)
 
