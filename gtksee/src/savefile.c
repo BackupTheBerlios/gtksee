@@ -18,13 +18,14 @@
  */
 
 /*
- * 2005-02-02: Added for save modificated images.
+ * 2004-04-26: Added for save modificated images.
  *
  */
 
 #include "config.h"
 
 #include <stdio.h>
+#include <unistd.h>
 
 #ifdef HAVE_LIBJPEG
    #include <jpeglib.h>
@@ -84,14 +85,6 @@ make_menu_filetypes()
                            (gint *) JPEG);
    gtk_menu_append (GTK_MENU (menu), item);
 #ifndef HAVE_LIBJPEG
-   gtk_widget_set_sensitive(item, FALSE);
-#endif
-
-   item = make_menu_item ("PNG",
-                           GTK_SIGNAL_FUNC (choice_type),
-                           (gint *) PNG);
-   gtk_menu_append (GTK_MENU (menu), item);
-#ifndef HAVE_LIBPNG
    gtk_widget_set_sensitive(item, FALSE);
 #endif
 
@@ -155,79 +148,6 @@ save2jpeg(gchar *filename)
 }
 
 void
-save2png(gchar *filename)
-{
-#ifdef HAVE_LIBPNG
-   FILE        *fp;
-   png_structp png_ptr;
-   png_infop   info_ptr;
-   png_uint_32 k, height, width;
-   png_bytep   row_pointers[imagecache->buffer_height];
-
-   if ((fp = fopen(filename, "wb")) == NULL) {
-      alert_dialog("Problem saving file");
-      return;
-   }
-
-   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-
-   if (png_ptr == NULL)
-   {
-      alert_dialog("Problem saving file");
-      fclose(fp);
-      return;
-   }
-
-   info_ptr = png_create_info_struct(png_ptr);
-   if (info_ptr == NULL)
-   {
-      alert_dialog("Problem saving file");
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
-      return;
-   }
-
-   if (setjmp(png_ptr->jmpbuf))
-   {
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
-      return;
-   }
-
-   png_init_io(png_ptr, fp);
-
-   png_set_compression_level(png_ptr, 6);
-
-   width  = imagecache->buffer_width;
-   height = imagecache->buffer_height;
-
-   png_set_IHDR(png_ptr, info_ptr,
-                  width, height,
-                  8,
-                  PNG_COLOR_TYPE_RGB,
-                  PNG_INTERLACE_NONE,
-                  PNG_COMPRESSION_TYPE_BASE,
-                  PNG_FILTER_TYPE_BASE);
-
-   png_write_info(png_ptr, info_ptr);
-
-   for (k = 0; k < height; k++)
-   {
-      row_pointers[k] = imagecache->buffer + k * width * 3;
-   }
-
-   png_write_image(png_ptr, row_pointers);
-   png_write_end(png_ptr, info_ptr);
-   png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
-
-   fclose(fp);
-
-   return;
-#endif
-}
-
-
-void
 save2ppm(gchar *filename)
 {
    FILE     *fp;
@@ -235,7 +155,8 @@ save2ppm(gchar *filename)
    fp = fopen (filename, "wb");
    if (fp == NULL)
    {
-      perror("Error: ");
+      alert_dialog("Problem saving file");
+      return;
    }
 
    fprintf (fp,
@@ -261,28 +182,24 @@ selection_ok(GtkWidget *widget, GtkWidget *fs)
 
    name = g_strdup(gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
 
-   switch (typefile)
+   if (strlen(name) != 0)
    {
-      case JPEG:
-         filename = g_strconcat(name, ".jpg", NULL);
-         save2jpeg(filename);
-         refresh_all();
-         break;
+      switch (typefile)
+      {
+         case JPEG:
+            filename = g_strconcat(name, ".jpg", NULL);
+            save2jpeg(filename);
+            refresh_list();
+            break;
 
-      case PNG :
-         filename = g_strconcat(name, ".png", NULL);
-         save2png(filename);
-         refresh_all();
-         break;
+         case PPM :
+            filename = g_strconcat(name, ".ppm", NULL);
+            save2ppm(filename);
+            refresh_list();
+            break;
 
-      case PPM :
-         filename = g_strconcat(name, ".ppm", NULL);
-         save2ppm(filename);
-         refresh_all();
-         break;
-
+      }
    }
-
    gtk_widget_destroy(fs);
 
    g_free(filename);

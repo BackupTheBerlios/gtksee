@@ -85,7 +85,7 @@ rename_all(gpointer il, gpointer button)
    g_free(fromfile);
    g_free(tofile);
 
-   refresh_all();
+   refresh_list();
 }
 void
 add_filenames(GtkWidget *il, GList *selection)

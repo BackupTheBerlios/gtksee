@@ -122,7 +122,7 @@ remove_it(GtkWidget *widget, tool_parameters *param)
    }
 
    g_free(buffer);
-   refresh_all();
+   refresh_list();
    row_list = GTK_CLIST(IMAGE_LIST(param->il)->child_list)->rows;
 
 #ifdef GTK_HAVE_FEATURES_1_1_0
@@ -228,7 +228,7 @@ rename_it(tool_parameters *param, GtkWidget *widget)
          if (rename(fromfile, tofile) == 0)
          {
             strncpy(info->name, buf, 256);
-            refresh_all();
+            refresh_list();
          } else
          {
             alert_dialog(_("Problem in rename file!"));

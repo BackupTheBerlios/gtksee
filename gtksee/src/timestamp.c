@@ -142,7 +142,7 @@ change_datetime(gpointer il, gpointer button)
 
    selection = image_list_get_selection (IMAGE_LIST(il));
    selection = g_list_first(selection);
-   
+
    status = 0;
    buf = g_malloc(sizeof(gchar) * 2048);
 
@@ -174,14 +174,14 @@ change_datetime(gpointer il, gpointer button)
    }
 
    close_dialog(dialog);
-   
+
    if (status)
    {
       alert_dialog(_("Problem changing date and time of files!"));
    }
 
    g_free(buf);
-   refresh_all();
+   refresh_list();
 }
 
 void

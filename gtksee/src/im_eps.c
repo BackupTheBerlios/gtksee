@@ -363,12 +363,7 @@ ps_open (gchar *filename)
 void
 ps_close (FILE *ifp)
 {
-   gchar buf[STR_LENGTH];
-
-   while (fgets(buf, STR_LENGTH-1, ifp) != NULL)
-      ;
-
-   pclose (ifp);  /* Finish reading from pipe. */
+   pclose(ifp); /* Close the pipe */
 }
 
 /* Read the header of a raw PNM-file and
@@ -442,8 +437,8 @@ g_shell_quote (const gchar *unquoted_string)
     */
 
    const gchar *p;
-   GString *dest;
-   gchar *ret;
+   GString     *dest;
+   gchar       *ret;
 
    g_return_val_if_fail (unquoted_string != NULL, NULL);
 

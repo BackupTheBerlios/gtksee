@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -324,7 +325,7 @@ viewer_toolbar_full_screen(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("full_screen", TRUE);
-   
+
    gtk_widget_destroy(window);
    get_full_view_window();
 }
@@ -334,6 +335,7 @@ viewer_toolbar_save_image(GtkWidget *widget, gpointer data)
 {
    if (viewer_busy) return;
 
+   chdir(image_list_get_dir(IMAGE_LIST(imagelist)));
    savefile (cache);
    viewer_save_enable(FALSE);
 }
@@ -422,7 +424,7 @@ viewer_toolbar_fitscreen_toggled(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("fit_screen", GTK_TOGGLE_BUTTON(widget)->active);
-   
+
    view_current_image();
 }
 
@@ -948,7 +950,7 @@ viewer_popup_view(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("full_screen", FALSE);
-   
+
    gtk_widget_destroy(window);
    get_viewer_window_internal();
 }
@@ -967,7 +969,7 @@ viewer_popup_fitscreen(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("fit_screen", GTK_CHECK_MENU_ITEM(widget)->active);
-   
+
    view_current_image();
 }
 

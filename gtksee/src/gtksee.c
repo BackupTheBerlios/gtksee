@@ -349,9 +349,9 @@ file_selected_internal(ImageList *il)
 
    fast_preview = rc_get_boolean("fast_preview");
 
-   set_busy_cursor();
    if (info -> valid)
    {
+      set_busy_cursor();
       /* load the image if necessary */
       if (!info->loaded)
       {
@@ -391,7 +391,10 @@ file_selected_internal(ImageList *il)
          }
 
          if(info->valid == FALSE)
+         {
+            set_normal_cursor();
             return;
+         }
 
       } else
       {
