@@ -284,7 +284,7 @@ options_ok(GtkWidget *window)
 	interval = atoi(gtk_entry_get_text(
 		GTK_ENTRY(slideshow_interval_entry)));
 	rc_set_int(interval_rc, interval);
-	rc_save_gtkseerc();
+	
 	if (need_refresh)
 	{
 		refresh_all();

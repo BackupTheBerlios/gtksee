@@ -22,6 +22,7 @@
  *             remove_file function
  *             remove_it   function
  *             rename_it   function
+ * 2004-05-13: Added code for rename multiple files
  */
 #include "config.h"
 
@@ -37,6 +38,8 @@
 #include "common_tools.h"
 #include "imagelist.h"
 #include "gtksee.h"
+#include "rc.h"
+#include "rename_seq.h"
 
 void     alert_dialog   (gchar     *myline);
 void     close_dialog   (GtkWidget *widget);
@@ -44,6 +47,13 @@ void     remove_it      (GtkWidget *widget, tool_parameters *param);
 void     rename_it      (GtkWidget *widget, tool_parameters *param);
 
 static tool_parameters   param;
+
+void
+close_gtksee()
+{
+   rc_save_gtkseerc();
+   gtk_main_quit();
+}
 
 void
 alert_dialog(gchar *myline)
@@ -251,8 +261,10 @@ rename_file(GtkWidget *il, GList *selection)
    ImageInfo         *info;
    tool_parameters   *selec;
    GtkWidget         *dialog, *label, *button, *entry;
+   gint              numberfiles;
 
-   if (g_list_length(selection)==1)
+   numberfiles = g_list_length(selection);
+   if (numberfiles==1)
    {
       dialog = gtk_dialog_new();
       gtk_container_border_width(GTK_CONTAINER(dialog), 5);
@@ -305,7 +317,7 @@ rename_file(GtkWidget *il, GList *selection)
 
    } else
    {
-      alert_dialog(_("Impossible to rename the files"));
+      rename_serie(il, selection);
    }
 }
 

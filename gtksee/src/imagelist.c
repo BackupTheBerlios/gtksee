@@ -764,7 +764,7 @@ void
 image_list_set_sort_type(ImageList *il, ImageSortType type)
 {
    rc_set_int("image_sort_type", type);
-   rc_save_gtkseerc();
+   
 
    switch (il->list_type)
    {

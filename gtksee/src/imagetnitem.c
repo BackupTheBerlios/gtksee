@@ -26,12 +26,17 @@
 #include <string.h>
 #include <time.h>
 #include <gtk/gtk.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "gtypes.h"
 #include "util.h"
 #include "scanline.h"
 #include "rc.h"
 #include "imagetnitem.h"
+
+/* CLAMP is defined in glib.h */
+#define  CLAMP0255(x)         CLAMP(x,0,255)
 
 typedef struct
 {
@@ -315,6 +320,14 @@ image_tnitem_load_image(ImageTnItem *item)
    ImageInfo *info;
    gboolean fast_preview;
 
+   /* For thumnbails ... not used yet
+   gchar       *pathname, *xvpathname, *thumbname;
+   guchar      *buffer;
+   FILE        *fp;
+   gint        i, j, w, h;
+   ImageCache  *cache;
+   */
+
    fast_preview = rc_get_boolean("fast_preview");
    if (strlen(item->filename) > 0)
    {
@@ -351,6 +364,66 @@ image_tnitem_load_image(ImageTnItem *item)
             (fast_preview?SCANLINE_PREVIEW:0));
          tn->image = cache_img;
          tn->last_modified = info->time;
+
+         /* make thumbnails ... code not used yet
+         pathname   = g_dirname (item->filename);
+         xvpathname = g_strconcat (pathname, "/", ".xvpics", NULL);
+         thumbname  = g_strconcat (xvpathname, "/", item->label, NULL);
+
+         printf("Directorio: %s\n", xvpathname);
+         printf("XV Archivo: %s\n", thumbname);
+
+         mkdir (xvpathname, 0755);
+
+         fp = fopen (thumbname, "wb");
+         if (fp == NULL)
+         {
+            perror("Error: ");
+         }
+
+         cache  = scanline_get_cache();
+         buffer = cache->buffer;
+         h = cache->buffer_height;
+         w = cache->buffer_width;
+
+         fprintf (fp,
+            "P7 332\n#IMGINFO:%dx%dx (%d %s)\n"
+             "#Created by GTK See\n"
+             "#END_OF_COMMENTS\n%d %d 255\n",
+             info->width, info->height,
+             (int)info->size, "bytes",
+             w, h);
+
+         // Code taken from GIMP ...
+         for (i=0; i<h; i++)
+         {
+            gint rerr=0, gerr=0, berr=0;
+
+            for (j=0; j<w; j++)
+            {
+               gint32 r,g,b;
+
+               r = *(buffer++) + rerr;
+               g = *(buffer++) + gerr;
+               b = *(buffer++) + berr;
+
+               r = CLAMP0255 (r);
+               g = CLAMP0255 (g);
+               b = CLAMP0255 (b);
+
+               fputc(((r>>5)<<5) | ((g>>5)<<2) | (b>>6), fp);
+
+               rerr = r - ( (r>>5) * 255 ) / 7;
+               gerr = g - ( (g>>5) * 255 ) / 7;
+               berr = b - ( (b>>6) * 255 ) / 3;
+            }
+         }
+         fclose(fp);
+         g_free(pathname);
+         g_free(xvpathname);
+         g_free(thumbname);
+         */
+         /* Final de la rutina de thumbnail */
       }
       item->image = tn->image;
    } else

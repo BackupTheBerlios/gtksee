@@ -26,15 +26,22 @@
 
 #include <gtk/gtk.h>
 
+#define LEFT      1
+#define RIGHT     2
+#define RIGHTLEFT 3
+#define UPDOWN    4
+
 void		viewer_toolbar_browse		(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_full_screen	(GtkWidget *widget, gpointer data);
+void		viewer_toolbar_save_image	(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_next_image	(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_prev_image	(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_slideshow_toggled(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_fitscreen_toggled(GtkWidget *widget, gpointer data);
-void		viewer_toolbar_rotate_left	(GtkWidget *widget, gpointer data);
-void		viewer_toolbar_rotate_right	(GtkWidget *widget, gpointer data);
+void		viewer_toolbar_rotate	(GtkWidget *widget, gpointer data);
+void		viewer_toolbar_reflect	(GtkWidget *widget, gpointer data);
 void		viewer_toolbar_refresh		(GtkWidget *widget, gpointer data);
+void		viewer_save_enable		(gboolean e);
 void		viewer_next_enable		(gboolean e);
 void		viewer_prev_enable		(gboolean e);
 void		viewer_slideshow_set_state	(gboolean e);

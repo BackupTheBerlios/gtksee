@@ -26,16 +26,18 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
-#include "gtypes.h"
-#include "scanline.h"
-#include "imagelist.h"
+#include "common_tools.h"
 #include "detect.h"
 #include "dndviewport.h"
-#include "rc.h"
 #include "gtksee.h"
-#include "viewertoolbar.h"
-#include "viewerstatus.h"
+#include "gtypes.h"
+#include "imagelist.h"
+#include "rc.h"
+#include "scanline.h"
+#include "savefile.h"
 #include "viewer.h"
+#include "viewerstatus.h"
+#include "viewertoolbar.h"
 
 #include "../icons/gtksee.xpm"
 #include "pixmaps/blank.xpm"
@@ -44,7 +46,7 @@
 #define MAX_HEIGHT (gdk_screen_height()-80)
 #define MAX_FULL_WIDTH (gdk_screen_width())
 #define MAX_FULL_HEIGHT (gdk_screen_height())
-#define MOVEMENT_INCREASE 200
+#define MOVEMENT_INCREASE 10
 
 static GtkWidget *window, *imagelist;
 static GList *image_infos;
@@ -59,25 +61,22 @@ static gboolean slide_show = FALSE;
 static guint timeout_callback_tag = 0;
 static gboolean have_xgrab;
 
-void     view_current_image      ();
-void     viewer_set_busy_cursor     ();
-void     viewer_set_normal_cursor   ();
-void     viewer_key_release      (GtkWidget *widget,
-                   GdkEvent *event,
-                   gpointer data);
-void     viewer_menu_popup    (GtkWidget *widget,
-                   gpointer data);
-void     viewer_popup_view    (GtkWidget *widget,
-                   gpointer data);
-void     viewer_popup_slideshow     (GtkWidget *widget,
-                   gpointer data);
-void     viewer_popup_fitscreen     (GtkWidget *widget,
-                   gpointer data);
-void     viewer_slideshow_next      (gpointer data);
-void     viewer_slideshow_toggled_internal
-                  (gboolean active);
+void view_current_image       ();
+void viewer_set_busy_cursor   ();
+void viewer_set_normal_cursor ();
+void viewer_key_release (GtkWidget *widget, GdkEvent *event, gpointer data);
+void viewer_menu_popup  (GtkWidget *widget, gpointer data);
+void viewer_popup_view  (GtkWidget *widget, gpointer data);
+void viewer_popup_slideshow(GtkWidget *widget, gpointer data);
+void viewer_popup_fitscreen(GtkWidget *widget, gpointer data);
+void viewer_slideshow_next (gpointer data);
+void viewer_slideshow_toggled_internal (gboolean active);
+
 GtkWidget*  get_viewer_window_internal ();
-GtkWidget*  get_full_view_window    ();
+GtkWidget*  get_full_view_window       ();
+
+/* Define a global var */
+ImageCache *cache;
 
 void
 viewer_set_busy_cursor()
@@ -136,7 +135,7 @@ view_current_image()
    gtk_window_set_title(GTK_WINDOW(window), buffer);
 
    full_screen = rc_get_boolean("full_screen");
-   fit_screen = rc_get_boolean("fit_screen");
+   fit_screen  = rc_get_boolean("fit_screen");
 
    if (!current -> valid)
    {
@@ -210,9 +209,6 @@ view_current_image()
 
    need_scale = (fit_screen && too_big);
 
-/* PARCHE
-   need_scale = fit_screen;
-*/
    if (need_scale)
    {
       if (max_width * height < max_height * width)
@@ -221,33 +217,27 @@ view_current_image()
          {
             set_viewer_status_zoom(max_width * 100 / width);
          }
-         tmp = width;
+         tmp   = width;
          width = max_width;
-         height = width * height / tmp;
+         height= width * height / tmp;
       } else
       {
          if (!full_screen)
          {
             set_viewer_status_zoom(max_height * 100 / height);
          }
-         tmp = height;
-         height = max_height;
+         tmp   = height;
+         height= max_height;
          width = height * width / tmp;
       }
-      gtk_widget_set_usize(
-         viewport,
-         width,
-         height);
+      gtk_widget_set_usize(viewport, width, height);
    } else
    {
       if (!full_screen)
       {
          set_viewer_status_zoom(100);
       }
-      gtk_widget_set_usize(
-         viewport,
-         min(width,max_width),
-         min(height,max_height));
+      gtk_widget_set_usize(viewport, min(width,max_width), min(height,max_height));
    }
 
    /* clear last image */
@@ -274,27 +264,26 @@ view_current_image()
       load_scaled_image(viewing_image, current,
          max_width, max_height,
          window,
-         viewport_image,
-         (slide_show ? 0 : (SCANLINE_INTERACT | SCANLINE_DISPLAY)));
+         viewport_image, 0);
    } else
    {
       load_scaled_image(viewing_image, current,
          -1, -1,
          window,
-         viewport_image,
-         (slide_show ? 0 : (SCANLINE_INTERACT | SCANLINE_DISPLAY)));
+         viewport_image, 0);
    }
-/*Agregado por DANIEL OME */
-loaded_cache = scanline_get_cache();
-ptr = loaded_cache->buffer;
-for (i = 0; i < loaded_cache->buffer_height; i++)
-{
-   gtk_preview_draw_row(preview, ptr,
-      0, i, loaded_cache->buffer_width);
-   ptr += loaded_cache->buffer_width * 3;
-}
-gtk_widget_draw(window, NULL);
-/* FINAL DEL AGREGADO DE DANIEL OME */
+
+   /* Display the image */
+   loaded_cache = scanline_get_cache();
+   ptr = loaded_cache->buffer;
+   for (i = 0; i < loaded_cache->buffer_height; i++)
+   {
+      gtk_preview_draw_row(preview, ptr,
+                              0, i,
+                              loaded_cache->buffer_width);
+      ptr += loaded_cache->buffer_width * 3;
+   }
+   gtk_widget_draw(window, NULL);
 
    gtk_grab_remove(viewport);
    if (slide_show)
@@ -335,9 +324,18 @@ viewer_toolbar_full_screen(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("full_screen", TRUE);
-   rc_save_gtkseerc();
+   
    gtk_widget_destroy(window);
    get_full_view_window();
+}
+
+void
+viewer_toolbar_save_image(GtkWidget *widget, gpointer data)
+{
+   if (viewer_busy) return;
+
+   savefile (cache);
+   viewer_save_enable(FALSE);
 }
 
 void
@@ -373,6 +371,7 @@ viewer_toolbar_next_image(GtkWidget *widget, gpointer data)
       {
          viewer_next_enable(image_list_get_next(IMAGE_LIST(imagelist), current) != NULL);
          viewer_prev_enable(image_list_get_previous(IMAGE_LIST(imagelist), current) != NULL);
+         viewer_save_enable(FALSE);
       }
    }
    view_current_image();
@@ -411,6 +410,7 @@ viewer_toolbar_prev_image(GtkWidget *widget, gpointer data)
       {
          viewer_next_enable(image_list_get_next(IMAGE_LIST(imagelist), current) != NULL);
          viewer_prev_enable(image_list_get_previous(IMAGE_LIST(imagelist), current) != NULL);
+         viewer_save_enable(FALSE);
       }
    }
    view_current_image();
@@ -422,7 +422,7 @@ viewer_toolbar_fitscreen_toggled(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("fit_screen", GTK_TOGGLE_BUTTON(widget)->active);
-   rc_save_gtkseerc();
+   
    view_current_image();
 }
 
@@ -501,34 +501,65 @@ viewer_slideshow_next(gpointer data)
 }
 
 void
-viewer_toolbar_rotate_left(GtkWidget *widget, gpointer data)
+viewer_toolbar_rotate(GtkWidget *widget, gpointer data)
 {
-   ImageCache *cache;
-   gint i, j, bufsize, t;
+   gint i, j, bufsize, t, direction;
    guchar *newbuf, *ptr1, *ptr2;
 
    if (viewer_busy) return;
 
+   //viewer_set_busy_cursor();
+   viewer_save_enable(TRUE);
+
+   direction = (gint) data;
+
    cache = scanline_get_cache();
    bufsize = cache->buffer_width * cache->buffer_height * 3;
    newbuf = g_malloc(bufsize);
-   for (i = 0; i < cache->buffer_height; i++)
+
+   switch(direction)
    {
-      for (j = 0; j < cache->buffer_width; j++)
-      {
-         ptr1 = newbuf + ((cache->buffer_width - j - 1)
-            * cache->buffer_height + i) * 3;
-         ptr2 = cache->buffer +
-            (i * cache->buffer_width + j) * 3;
-         *ptr1++ = *ptr2++;
-         *ptr1++ = *ptr2++;
-         *ptr1++ = *ptr2++;
-      }
+      case LEFT :   /* Rotate to left */
+         for (i = 0; i < cache->buffer_height; i++)
+         {
+            for (j = 0; j < cache->buffer_width; j++)
+            {
+               ptr1 = newbuf + ((cache->buffer_width - j - 1)
+                  * cache->buffer_height + i) * 3;
+               ptr2 = cache->buffer +
+                  (i * cache->buffer_width + j) * 3;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+            }
+         }
+         break;
+
+      case RIGHT:   /* Rotate to right */
+         for (i = 0; i < cache->buffer_height; i++)
+         {
+            for (j = 0; j < cache->buffer_width; j++)
+            {
+               ptr1 = newbuf + (j * cache->buffer_height +
+                  (cache->buffer_height - i - 1)) * 3;
+               ptr2 = cache->buffer +
+                  (i * cache->buffer_width + j) * 3;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+            }
+         }
+         break;
+
+      default:
+         break;
    }
+
    g_free(cache->buffer);
    cache->buffer = newbuf;
-   t = cache->buffer_width;
-   cache->buffer_width = cache->buffer_height;
+
+   t                    = cache->buffer_width;
+   cache->buffer_width  = cache->buffer_height;
    cache->buffer_height = t;
 
    /* Display the rotated image */
@@ -545,40 +576,69 @@ viewer_toolbar_rotate_left(GtkWidget *widget, gpointer data)
       min(cache->buffer_width, MAX_WIDTH),
       min(cache->buffer_height, MAX_HEIGHT));
    gtk_widget_draw(viewport_image, NULL);
+
+   //viewer_set_normal_cursor();
 }
 
+/* Code added by Jean P. Demailly */
 void
-viewer_toolbar_rotate_right(GtkWidget *widget, gpointer data)
+viewer_toolbar_reflect(GtkWidget *widget, gpointer data)
 {
-   ImageCache *cache;
-   gint i, j, bufsize, t;
-   guchar *newbuf, *ptr1, *ptr2;
+   gint        i, j, bufsize, direction;
+   guchar      *newbuf, *ptr1, *ptr2;
 
    if (viewer_busy) return;
+
+   //viewer_set_busy_cursor();
+   viewer_save_enable(TRUE);
+
+   direction = (gint) data;
 
    cache = scanline_get_cache();
    bufsize = cache->buffer_width * cache->buffer_height * 3;
    newbuf = g_malloc(bufsize);
-   for (i = 0; i < cache->buffer_height; i++)
-   {
-      for (j = 0; j < cache->buffer_width; j++)
-      {
-         ptr1 = newbuf + (j * cache->buffer_height +
-            (cache->buffer_height - i - 1)) * 3;
-         ptr2 = cache->buffer +
-            (i * cache->buffer_width + j) * 3;
-         *ptr1++ = *ptr2++;
-         *ptr1++ = *ptr2++;
-         *ptr1++ = *ptr2++;
-      }
-   }
-   g_free(cache->buffer);
-   cache->buffer = newbuf;
-   t = cache->buffer_width;
-   cache->buffer_width = cache->buffer_height;
-   cache->buffer_height = t;
 
-   /* Display the rotated image */
+   switch(direction)
+   {
+      case RIGHTLEFT:
+         for (j = 0; j < cache->buffer_height; j++)
+         {
+            for (i = 0; i < cache->buffer_width; i++)
+            {
+               ptr1 = newbuf + (j * cache->buffer_width +
+                        cache->buffer_width - i - 1) * 3;
+               ptr2 = cache->buffer + (j * cache->buffer_width + i) * 3;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+            }
+         }
+         break;
+
+      case UPDOWN:
+         for (j = 0; j < cache->buffer_height; j++)
+         {
+            for (i = 0; i < cache->buffer_width; i++)
+            {
+               ptr1 = newbuf + ((cache->buffer_height - j - 1) *
+                        cache->buffer_width + i) * 3;
+               ptr2 = cache->buffer + (j * cache->buffer_width + i) * 3;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+               *ptr1++ = *ptr2++;
+            }
+         }
+         break;
+
+      default:
+         break;
+   }
+
+   g_free(cache->buffer);
+
+   cache->buffer        = newbuf;
+
+   /* Display the reflected image */
    gtk_preview_size(GTK_PREVIEW(viewport_image),
       cache->buffer_width, cache->buffer_height);
    gtk_widget_queue_resize(viewport_image);
@@ -592,11 +652,14 @@ viewer_toolbar_rotate_right(GtkWidget *widget, gpointer data)
       min(cache->buffer_width, MAX_WIDTH),
       min(cache->buffer_height, MAX_HEIGHT));
    gtk_widget_draw(viewport_image, NULL);
+
+   //viewer_set_normal_cursor();
 }
 
 void
 viewer_toolbar_refresh(GtkWidget *widget, gpointer data)
 {
+   viewer_save_enable(FALSE);
    view_current_image();
 }
 
@@ -610,6 +673,7 @@ viewer_key_release(GtkWidget *widget, GdkEvent *event, gpointer data)
    if (viewer_busy) return;
 
    full_screen = rc_get_boolean("full_screen");
+   viewer_save_enable(FALSE);
 
    switch (event->key.keyval)
    {
@@ -617,8 +681,12 @@ viewer_key_release(GtkWidget *widget, GdkEvent *event, gpointer data)
      case 'F':
       rc_set_boolean("fit_screen", !full_screen);
       if (viewer_busy) return;
-      view_current_image();
-      //viewer_popup_fitscreen(widget, NULL);
+
+      if (full_screen)
+         viewer_popup_view(NULL, NULL);
+      else
+         viewer_toolbar_full_screen(NULL, NULL);
+
       break;
 
      case ' ':
@@ -706,6 +774,7 @@ viewer_key_release(GtkWidget *widget, GdkEvent *event, gpointer data)
    }
 }
 
+/* Menu popup in fullscreen */
 void
 viewer_menu_popup(GtkWidget *widget, gpointer data)
 {
@@ -829,10 +898,45 @@ viewer_menu_popup(GtkWidget *widget, gpointer data)
       GTK_SIGNAL_FUNC(viewer_toolbar_browse), NULL);
    gtk_widget_show(menu_item);
 
+   menu_item = gtk_menu_item_new();
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_widget_show(menu_item);
+
+   /* Rotate and reflect function ... */
+   menu_item = gtk_menu_item_new_with_label(_("Rotate -90"));
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+      GTK_SIGNAL_FUNC(viewer_toolbar_rotate), (gint *) LEFT);
+   gtk_widget_show(menu_item);
+
+   menu_item = gtk_menu_item_new_with_label(_("Rotate +90"));
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+      GTK_SIGNAL_FUNC(viewer_toolbar_rotate), (gint *) RIGHT);
+   gtk_widget_show(menu_item);
+
+   menu_item = gtk_menu_item_new_with_label(_("Reflect Right/Left"));
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+      GTK_SIGNAL_FUNC(viewer_toolbar_reflect),
+      (gint *) RIGHTLEFT);
+   gtk_widget_show(menu_item);
+
+   menu_item = gtk_menu_item_new_with_label(_("Reflect Up/Down"));
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+      GTK_SIGNAL_FUNC(viewer_toolbar_reflect),
+      (gint *) UPDOWN);
+   gtk_widget_show(menu_item);
+
+   menu_item = gtk_menu_item_new();
+   gtk_menu_append(GTK_MENU(menu), menu_item);
+   gtk_widget_show(menu_item);
+
    menu_item = gtk_menu_item_new_with_label(_("Exit"));
    gtk_menu_append(GTK_MENU(menu), menu_item);
    gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
-      GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+      GTK_SIGNAL_FUNC(close_gtksee), NULL);
    gtk_widget_show(menu_item);
 
    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, 1);
@@ -844,7 +948,7 @@ viewer_popup_view(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("full_screen", FALSE);
-   rc_save_gtkseerc();
+   
    gtk_widget_destroy(window);
    get_viewer_window_internal();
 }
@@ -863,7 +967,7 @@ viewer_popup_fitscreen(GtkWidget *widget, gpointer data)
    if (viewer_busy) return;
 
    rc_set_boolean("fit_screen", GTK_CHECK_MENU_ITEM(widget)->active);
-   rc_save_gtkseerc();
+   
    view_current_image();
 }
 
@@ -945,7 +1049,7 @@ get_viewer_window_internal()
    /* creating viewer window */
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-      GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+      GTK_SIGNAL_FUNC(close_gtksee), NULL);
    gtk_container_border_width(GTK_CONTAINER(window), 2);
    gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 
@@ -1026,6 +1130,7 @@ get_viewer_window_internal()
    /* adding table into viewer window */
    gtk_container_add(GTK_CONTAINER(window), table);
    gtk_widget_show(window);
+   viewer_save_enable(FALSE);
 
    if (imagelist == NULL)
    {
@@ -1112,8 +1217,10 @@ get_full_view_window()
 
    /* Make X grab to full-screen window */
    if ((gdk_pointer_grab(window->window, TRUE,
-      GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
-      GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK |
+      GDK_BUTTON_PRESS_MASK |
+      GDK_BUTTON_RELEASE_MASK |
+      GDK_ENTER_NOTIFY_MASK |
+      GDK_LEAVE_NOTIFY_MASK |
       GDK_POINTER_MOTION_MASK,
       NULL, NULL, 0) == 0))
    {

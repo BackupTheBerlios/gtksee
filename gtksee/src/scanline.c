@@ -378,6 +378,7 @@ jpeg_scanline(
    //gtk_preview_draw_row(preview, rgbbuffer, left, scanline, width);
 /*FINAL DEL AGREGADO DE DANIEL OME*/
 //gtk_preview_draw_row(preview, rgbbuffer, left, scanline, width);
+
    if(preview->buffer_width != width)
       preview->buffer_width = width;
 
@@ -706,118 +707,11 @@ load_scaled_image(
    no_scale = max_width < 0 || max_height < 0 ||
       (orig_width <= max_width && orig_height <= max_height);
 
-/* PARCHE
-   no_scale = max_width < 0 || max_height < 0;
-*/
    if (no_scale)
    {
       width = orig_width;
       height = orig_height;
-      if (container == NULL)
-      {
-         image_wid = NULL;
-      } else
-      {
-         image_wid = container;
-         preview = GTK_PREVIEW(image_wid);
-         gtk_preview_size(preview, width, height);
-         gtk_widget_queue_resize(image_wid);
-         if (image_cache.buffer != NULL)
-         {
-            g_free(image_cache.buffer);
-         }
-         image_cache.buffer = g_malloc(width * 3 * height);
-         image_cache.buffer_width = width;
-         image_cache.buffer_height = height;
-         if (current_scanflags & SCANLINE_DISPLAY)
-         {
-            while (image_wid->allocation.width < width ||
-               image_wid->allocation.height < height ||
-               gtk_events_pending())
-               gtk_main_iteration();
-         }
-#ifndef GTK_HAVE_FEATURES_1_1_0
-         left_pos = (image_wid->allocation.width - width) / 2;
-         top_pos = (image_wid->allocation.height - height) / 2;
-#endif
-      }
-
-      switch (type)
-      {
-         case JPG:
-#ifdef HAVE_LIBJPEG
-            jpeg_load(filename, (JpegLoadFunc)jpeg_scanline);
-#else
-            return;
-#endif
-            break;
-         case TIF:
-#ifdef HAVE_LIBTIFF
-            tiff_load(filename, (TiffLoadFunc)jpeg_scanline);
-#else
-            return;
-#endif
-            break;
-         case PNG:
-#ifdef HAVE_LIBPNG
-            png_load(filename, (PngLoadFunc)jpeg_scanline);
-#else
-            return;
-#endif
-            break;
-         case BMP:
-            bmp_load(filename, (BmpLoadFunc)jpeg_scanline);
-            break;
-         case GIF:
-            d = gif_load(filename, (GifLoadFunc)gif_scanline);
-            if (d != NULL && strlen(d) > 0)
-            {
-               info->desc = d;
-               info->has_desc = TRUE;
-            }
-            break;
-         case XPM:
-            xpm_load(filename, (XpmLoadFunc)gif_scanline);
-            break;
-         case ICO:
-            ico_load(filename, (IcoLoadFunc)gif_scanline);
-            break;
-         case PCX:
-            pcx_load(filename, (PcxLoadFunc)jpeg_scanline);
-            break;
-         case PNM:
-            pnm_load(filename, (PnmLoadFunc)jpeg_scanline);
-            break;
-         case PSD:
-            d = psd_load(filename, (PsdLoadFunc)jpeg_scanline);
-            if (d != NULL && strlen(d) > 0)
-            {
-               info->desc = d;
-               info->has_desc = TRUE;
-            }
-            break;
-         case XBM:
-           xbm_load(filename, (XbmLoadFunc)jpeg_scanline);
-            break;
-         case XCF:
-            xcf_load(filename, (XcfLoadFunc)jpeg_scanline);
-            break;
-         case TGA:
-            tga_load(filename, (TgaLoadFunc)jpeg_scanline);
-            break;
-         case XWD:
-            xwd_load(filename, (XwdLoadFunc)jpeg_scanline);
-         case SUN:
-            sun_load(filename, (SunLoadFunc)jpeg_scanline);
-         case EPS:
-            eps_load(filename, (EpsLoadFunc)jpeg_scanline);
-         case SGI:
-            sgi_load(filename, (SgiLoadFunc)jpeg_scanline);
-            break;
-         default:
-            return;
-      }
-   } else
+   }else
    {
       if (max_width * orig_height < max_height * orig_width)
       {
@@ -828,170 +722,216 @@ load_scaled_image(
          height = max_height;
          width = height * orig_width / orig_height;
       }
+   }
 
-      if (container == NULL)
+   if (container == NULL)
+   {
+      image_wid = NULL;
+   } else
+   {
+      image_wid = container;
+      preview = GTK_PREVIEW(image_wid);
+      gtk_preview_size(preview, width, height);
+      gtk_widget_queue_resize(image_wid);
+      if (image_cache.buffer != NULL)
       {
-         image_wid = NULL;
-      } else
+         g_free(image_cache.buffer);
+      }
+      image_cache.buffer = g_malloc(width * 3 * height);
+      image_cache.buffer_width = width;
+      image_cache.buffer_height = height;
+      if (current_scanflags & SCANLINE_DISPLAY)
       {
-         image_wid = container;
-         preview = GTK_PREVIEW(image_wid);
-         gtk_preview_size(preview, width, height);
-         gtk_widget_queue_resize(image_wid);
-         if (image_cache.buffer != NULL)
-         {
-            g_free(image_cache.buffer);
-         }
-         image_cache.buffer = g_malloc(width * 3 * height);
-         image_cache.buffer_width = width;
-         image_cache.buffer_height = height;
-         if (current_scanflags & SCANLINE_DISPLAY)
-         {
-            while (image_wid->allocation.width < width ||
-               image_wid->allocation.height < height ||
-               gtk_events_pending())
-               gtk_main_iteration();
-         }
+         while (image_wid->allocation.width < width ||
+            image_wid->allocation.height < height ||
+            gtk_events_pending())
+            gtk_main_iteration();
+      }
 #ifndef GTK_HAVE_FEATURES_1_1_0
-         left_pos = (image_wid->allocation.width - width) / 2;
-         top_pos = (image_wid->allocation.height - height) / 2;
+      left_pos = (image_wid->allocation.width - width) / 2;
+      top_pos = (image_wid->allocation.height - height) / 2;
 #endif
-      }
+   }
 
-      if (type == JPG)
-      {
+   comp = 3;
+   scan_image_src = g_malloc(orig_width * orig_height * comp);
+
+   switch (type)
+   {
+      case JPG:
 #ifdef HAVE_LIBJPEG
-         comp = ncolors / 8;
-         scan_image_src = g_malloc(orig_width * orig_height * comp);
-         jpeg_load(filename, (JpegLoadFunc)jpeg_scanline_buffered);
-#else
-         return;
-#endif
-      } else
-      if (type == TIF)
-      {
-#ifdef HAVE_LIBTIFF
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         tiff_load(filename, (TiffLoadFunc)jpeg_scanline_buffered);
-#else
-         return;
-#endif
-      } else
-      if (type == PNG)
-      {
-#ifdef HAVE_LIBPNG
-         if (info->bpp == 1) comp = 1;
-         else comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * comp);
-         png_load(filename, (PngLoadFunc)jpeg_scanline_buffered);
-#else
-         return;
-#endif
-      } else
-      if (type == PNM)
-      {
-         comp = ncolors / 8;
-         if (comp < 1) comp = 1;
-         scan_image_src = g_malloc(orig_width * orig_height * comp);
-         pnm_load(filename, (PnmLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == XBM)
-      {
-         comp = 1;
-         scan_image_src = g_malloc(orig_width * orig_height);
-         xbm_load(filename, (XbmLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == BMP)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         bmp_load(filename, (BmpLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == GIF)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         d = gif_load(filename, (GifLoadFunc)gif_scanline_buffered);
-         if (d != NULL && strlen(d) > 0)
+         if (no_scale)
+            jpeg_load(filename, (JpegLoadFunc)jpeg_scanline);
+         else
          {
-            info->desc = d;
-            info->has_desc = TRUE;
+            comp = ncolors / 8;
+            scan_image_src = g_realloc(scan_image_src,
+                                 orig_width * orig_height * comp);
+            jpeg_load(filename, (JpegLoadFunc)jpeg_scanline_buffered);
          }
-      } else
-      if (type == XPM)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         xpm_load(filename, (XpmLoadFunc)gif_scanline_buffered);
-      } else
-      if (type == ICO)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         ico_load(filename, (IcoLoadFunc)gif_scanline_buffered);
-      } else
-      if (type == PCX)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         pcx_load(filename, (PcxLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == PSD)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         d = psd_load(filename, (PsdLoadFunc)jpeg_scanline_buffered);
-         if (d != NULL && strlen(d) > 0)
-         {
-            info->desc = d;
-            info->has_desc = TRUE;
-         }
-      } else
-      if (type == XCF)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         xcf_load(filename, (XcfLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == TGA)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         tga_load(filename, (TgaLoadFunc)jpeg_scanline_buffered);
-      } else
-      if (type == XWD)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         xwd_load(filename, (XwdLoadFunc)jpeg_scanline_buffered);
-      }
-      if (type == SUN)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         sun_load(filename, (SunLoadFunc)jpeg_scanline_buffered);
-      }
-      if (type == EPS)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         eps_load(filename, (EpsLoadFunc)jpeg_scanline_buffered);
-      }
-      if (type == SGI)
-      {
-         comp = 3;
-         scan_image_src = g_malloc(orig_width * orig_height * 3);
-         sgi_load(filename, (SgiLoadFunc)jpeg_scanline_buffered);
-      }
+#else
+         return;
+#endif
+         break;
 
-      /* Important!!!
-       * When the GIF image was read to buffer, it has
-       * been turned into RGB, but not indexed.
-       * So, we just use jpeg_scanline.
-       * It's always 3 bytes per pixel.
-       * Don't worry about the transparent color. :)
-       */
+      case TIF:
+#ifdef HAVE_LIBTIFF
+         if (no_scale)
+            tiff_load(filename, (TiffLoadFunc)jpeg_scanline);
+         else
+            tiff_load(filename, (TiffLoadFunc)jpeg_scanline_buffered);
+#else
+         return;
+#endif
+         break;
+
+      case PNG:
+#ifdef HAVE_LIBPNG
+         if (no_scale)
+               png_load(filename, (PngLoadFunc)jpeg_scanline);
+         else
+         {
+            if (info->bpp == 1)
+            {
+               comp = 1;
+               scan_image_src = g_realloc(scan_image_src,
+                                    orig_width * orig_height * comp);
+            }
+
+            png_load(filename, (PngLoadFunc)jpeg_scanline_buffered);
+         }
+#else
+         return;
+#endif
+         break;
+
+      case BMP:
+         if (no_scale)
+            bmp_load(filename, (BmpLoadFunc)jpeg_scanline);
+         else
+            bmp_load(filename, (BmpLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case GIF:
+         if (no_scale)
+            d = gif_load(filename, (GifLoadFunc)gif_scanline);
+         else
+            d = gif_load(filename, (GifLoadFunc)gif_scanline_buffered);
+
+         if (d != NULL && strlen(d) > 0)
+         {
+            info->desc = d;
+            info->has_desc = TRUE;
+         }
+         break;
+
+      case XPM:
+         if (no_scale)
+            xpm_load(filename, (XpmLoadFunc)gif_scanline);
+         else
+            xpm_load(filename, (XpmLoadFunc)gif_scanline_buffered);
+         break;
+
+      case ICO:
+         if (no_scale)
+            ico_load(filename, (IcoLoadFunc)gif_scanline);
+         else
+            ico_load(filename, (IcoLoadFunc)gif_scanline_buffered);
+         break;
+
+      case PCX:
+         if (no_scale)
+            pcx_load(filename, (PcxLoadFunc)jpeg_scanline);
+         else
+            pcx_load(filename, (PcxLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case PNM:
+         if (no_scale)
+            pnm_load(filename, (PnmLoadFunc)jpeg_scanline);
+         else
+         {
+            comp = ncolors / 8;
+            if (comp < 1) comp = 1;
+            scan_image_src = g_realloc(scan_image_src,
+                                 orig_width * orig_height * comp);
+            pnm_load(filename, (PnmLoadFunc)jpeg_scanline_buffered);
+         }
+         break;
+
+      case PSD:
+         if (no_scale)
+            d = psd_load(filename, (PsdLoadFunc)jpeg_scanline);
+         else
+            d = psd_load(filename, (PsdLoadFunc)jpeg_scanline_buffered);
+
+         if (d != NULL && strlen(d) > 0)
+         {
+            info->desc = d;
+            info->has_desc = TRUE;
+         }
+         break;
+
+      case XBM:
+         if (no_scale)
+            xbm_load(filename, (XbmLoadFunc)jpeg_scanline);
+         else
+         {
+            comp = 1;
+            scan_image_src = g_realloc(scan_image_src,
+                                    orig_width * orig_height * comp);
+            xbm_load(filename, (XbmLoadFunc)jpeg_scanline_buffered);
+         }
+         break;
+
+      case XCF:
+         if (no_scale)
+            xcf_load(filename, (XcfLoadFunc)jpeg_scanline);
+         else
+            xcf_load(filename, (XcfLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case TGA:
+         if (no_scale)
+            tga_load(filename, (TgaLoadFunc)jpeg_scanline);
+         else
+            tga_load(filename, (TgaLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case XWD:
+         if (no_scale)
+            xwd_load(filename, (XwdLoadFunc)jpeg_scanline);
+         else
+            xwd_load(filename, (XwdLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case SUN:
+         if (no_scale)
+            sun_load(filename, (SunLoadFunc)jpeg_scanline);
+         else
+            sun_load(filename, (SunLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case EPS:
+         if (no_scale)
+            eps_load(filename, (EpsLoadFunc)jpeg_scanline);
+         else
+            eps_load(filename, (EpsLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      case SGI:
+         if (no_scale)
+            sgi_load(filename, (SgiLoadFunc)jpeg_scanline);
+         else
+            sgi_load(filename, (SgiLoadFunc)jpeg_scanline_buffered);
+         break;
+
+      default:
+         return;
+   }
+
+   if (!no_scale)
+   {
       if (!scanline_cancelled)
       {
          if (current_scanflags & SCANLINE_PREVIEW)

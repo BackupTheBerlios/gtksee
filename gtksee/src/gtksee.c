@@ -348,12 +348,12 @@ file_selected_internal(ImageList *il)
 
    fast_preview = rc_get_boolean("fast_preview");
 
+   set_busy_cursor();
    if (info -> valid)
    {
       /* load the image if necessary */
       if (!info->loaded)
       {
-         set_busy_cursor();
          info->loaded = TRUE;
          strcpy(fullname, image_list_get_dir(il));
          if (fullname[strlen(fullname) - 1] != '/') strcat(fullname,"/");
@@ -369,11 +369,10 @@ file_selected_internal(ImageList *il)
          loaded_cache = scanline_get_cache();
          info->cache.buffer_width = loaded_cache->buffer_width;
          info->cache.buffer_height = loaded_cache->buffer_height;
-         t = loaded_cache->buffer_width *
-            loaded_cache->buffer_height * 3;
+         t = loaded_cache->buffer_width * loaded_cache->buffer_height * 3;
          info->cache.buffer = g_malloc(t);
          memcpy(info->cache.buffer, loaded_cache->buffer, t);
-         set_normal_cursor();
+
          if (info->width != old_width)
          {
             /* we should refresh the image info */
@@ -393,31 +392,34 @@ file_selected_internal(ImageList *il)
          if(info->valid == FALSE)
             return;
 
-         /* INICIO DEL AGREGADO DE DANIEL OME */
-         ptr = info->cache.buffer;
-         for (i = 0; i < info->cache.buffer_height; i++)
-         {
-            gtk_preview_draw_row(preview, ptr,
-               0, i, info->cache.buffer_width);
-            ptr += info->cache.buffer_width * 3;
-         }
-         gtk_widget_draw(preview_image, NULL);
-         /* FINAL DEL AGREGADO DE DANIEL OME */
       } else
       {
          /* The image has been load before. Use cache. */
          gtk_preview_size(preview, info->cache.buffer_width,
             info->cache.buffer_height);
          gtk_widget_queue_resize(preview_image);
+         /*
          ptr = info->cache.buffer;
          for (i = 0; i < info->cache.buffer_height; i++)
          {
-            gtk_preview_draw_row(preview, ptr,
-               0, i, info->cache.buffer_width);
-            ptr += info->cache.buffer_width * 3;
+             gtk_preview_draw_row(preview, ptr,
+                0, i, info->cache.buffer_width);
+             ptr += info->cache.buffer_width * 3;
          }
          gtk_widget_draw(preview_image, NULL);
+         */
       }
+
+      ptr = info->cache.buffer;
+      for (i = 0; i < info->cache.buffer_height; i++)
+      {
+          gtk_preview_draw_row(preview, ptr,
+             0, i, info->cache.buffer_width);
+          ptr += info->cache.buffer_width * 3;
+      }
+      gtk_widget_draw(preview_image, NULL);
+
+      set_normal_cursor();
    }
 }
 
@@ -448,7 +450,7 @@ void
 menu_file_full_view(GtkWidget *widget, gpointer data)
 {
    rc_set_boolean("full_screen", TRUE);
-   rc_save_gtkseerc();
+   
    show_viewer();
 }
 
@@ -520,7 +522,7 @@ gtksee_set_root(guchar *new_root)
 void
 menu_file_quit(GtkWidget *widget, gpointer data)
 {
-   gtk_main_quit();
+   close_gtksee();
 }
 
 void
@@ -641,7 +643,7 @@ menu_view_show_hidden(GtkWidget *widget, gpointer data)
    if (busy_level > 0) return;
 
    rc_set_boolean("show_hidden", GTK_CHECK_MENU_ITEM(widget)->active);
-   rc_save_gtkseerc();
+   
    menu_view_refresh(widget, data);
 }
 
@@ -651,7 +653,7 @@ menu_view_hide(GtkWidget *widget, gpointer data)
    if (busy_level > 0) return;
 
    rc_set_boolean("hide_non_images", GTK_CHECK_MENU_ITEM(widget)->active);
-   rc_save_gtkseerc();
+   
    refresh_list();
 }
 
@@ -686,7 +688,7 @@ void
 menu_view_preview(GtkWidget *widget, gpointer data)
 {
    rc_set_boolean("fast_preview", GTK_CHECK_MENU_ITEM(widget)->active);
-   rc_save_gtkseerc();
+   
 }
 
 void
@@ -883,7 +885,7 @@ toolbar_thumbnails(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_THUMBNAILS);
-   rc_save_gtkseerc();
+   
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -901,7 +903,7 @@ toolbar_small_icons(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_SMALL_ICONS);
-   rc_save_gtkseerc();
+   
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -919,7 +921,7 @@ toolbar_details(GtkWidget *widget, gpointer data)
 
    clear_preview_box();
    rc_set_int("image_list_type", IMAGE_LIST_DETAILS);
-   rc_save_gtkseerc();
+   
    if (GTK_TOGGLE_BUTTON(widget)->active)
    {
       set_busy_cursor();
@@ -1053,12 +1055,12 @@ main (int argc, char *argv[])
 
          case 'f':
             rc_set_boolean("full_screen", TRUE);
-            rc_save_gtkseerc();
+            
             break;
 
          case 'i':
             rc_set_boolean("fit_screen", TRUE);
-            rc_save_gtkseerc();
+            
             break;
 
          case 's':
@@ -1138,7 +1140,7 @@ gtksee_main()
    /* creating main window */
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-      GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+      GTK_SIGNAL_FUNC(close_gtksee), NULL);
    gtk_container_border_width(GTK_CONTAINER(window), 2);
    gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 
