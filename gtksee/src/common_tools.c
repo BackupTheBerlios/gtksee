@@ -41,7 +41,6 @@
 #include "rc.h"
 #include "rename_seq.h"
 
-void     alert_dialog   (gchar     *myline);
 void     close_dialog   (GtkWidget *widget);
 void     remove_it      (GtkWidget *widget, tool_parameters *param);
 void     rename_it      (GtkWidget *widget, tool_parameters *param);

@@ -47,6 +47,7 @@ typedef struct
 
 void        close_gtksee   ();
 void        close_dialog   (GtkWidget *widget);
+void        alert_dialog   (gchar     *myline);
 void        remove_file    (GtkWidget *il, GList *selection);
 void        rename_file    (GtkWidget *il, GList *selection);
 GtkWidget*  info_dialog_new(guchar *title, guint *sizes, guchar **text);

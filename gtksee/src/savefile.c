@@ -33,6 +33,7 @@
    #include <png.h>
 #endif
 
+#include "common_tools.h"
 #include "gtksee.h"
 #include "intl.h"
 #include "savefile.h"
@@ -121,7 +122,7 @@ save2jpeg(gchar *filename)
    jpeg_create_compress(&cinfo);
 
    if ((outfile = fopen(filename, "wb")) == NULL) {
-      fprintf(stderr, "can't open VALENTINA-OME.jpg\n");
+      alert_dialog("Problem saving file");
       return;
    }
    jpeg_stdio_dest(&cinfo, outfile);
@@ -164,7 +165,7 @@ save2png(gchar *filename)
    png_bytep   row_pointers[imagecache->buffer_height];
 
    if ((fp = fopen(filename, "wb")) == NULL) {
-      fprintf(stderr, "can't open VALENTINA-OME.jpg\n");
+      alert_dialog("Problem saving file");
       return;
    }
 
@@ -172,7 +173,7 @@ save2png(gchar *filename)
 
    if (png_ptr == NULL)
    {
-      fprintf(stderr, "can't crear PNG\n");
+      alert_dialog("Problem saving file");
       fclose(fp);
       return;
    }
@@ -180,6 +181,7 @@ save2png(gchar *filename)
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL)
    {
+      alert_dialog("Problem saving file");
       fclose(fp);
       png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
       return;
